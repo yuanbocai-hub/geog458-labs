@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic page information and mobile-friendly scaling. -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>University District Map</title>
+
+    <!-- Mapbox GL JS provides the map code and its required styles. -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
+
+    <style>
+        /* Remove the browser's default space around the page. */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Fill the entire browser window with the map. */
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mapbox draws the interactive map inside this element. -->
+    <div id="map"></div>
+
+    <script>
+        // This public token allows the browser to request Mapbox maps and fonts.
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZG91ZG91MDEyODE5IiwiYSI6ImNtdjdvZDN3ZzA5a3AyenEwZTV4ZnBwYnIifQ.pCGIuHdjcxeJ9ZO5WaiEWw';
+
+        // Create the map and place it in the div whose id is "map."
+        const mymap = new mapboxgl.Map({
+            container: 'map',
+
+            // Leaving style and projection commented out loads Mapbox Standard.
+            // style: 'mapbox://styles/mapbox/light-v11',
+            // projection: 'globe',
+
+            // Longitude comes first and latitude comes second.
+            // These coordinates center the map on the UW Seattle campus.
+            center: [-122.3078, 47.6553],
+            zoom: 14
+        });
+
+        // Wait until the basemap is ready before changing Standard style options.
+        mymap.on('style.load', () => {
+            // Dusk lighting gives the map a softer evening appearance.
+            mymap.setConfigProperty('basemap', 'lightPreset', 'dusk');
+
+            // Hide business and attraction labels so the map is less crowded.
+            mymap.setConfigProperty('basemap', 'showPointOfInterestLabels', false);
+
+            // Keep transit labels visible because buses and light rail are useful
+            // for understanding how students reach the University District.
+            mymap.setConfigProperty('basemap', 'showTransitLabels', true);
+
+            // Alegreya changes the label typeface and gives the map a warmer look.
+            // A clear, distinctive font is useful for a neighborhood-focused map.
+            mymap.setConfigProperty('basemap', 'font', 'Alegreya');
+        });
+
+        // Add a button that lets the user enter or leave fullscreen mode.
+        mymap.addControl(new mapboxgl.FullscreenControl());
+
+        // Add zoom buttons and a compass for changing or resetting direction.
+        mymap.addControl(new mapboxgl.NavigationControl());
+    </script>
+</body>
+</html>

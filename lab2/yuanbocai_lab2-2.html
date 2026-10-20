@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Megacities and the Global Urban Hierarchy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #f7f7f7;
+        }
+
+        #map {
+            position: absolute;
+            inset: 0;
+        }
+
+        /* The title states the map's argument rather than only naming the dataset. */
+        #title-panel {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            width: min(620px, calc(100% - 140px));
+            padding: 12px 18px;
+            transform: translateX(-50%);
+            border-left: 5px solid #d7301f;
+            background: rgba(15, 19, 28, 0.88);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+            text-align: center;
+        }
+
+        #title-panel h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.3px;
+        }
+
+        #title-panel p {
+            margin: 5px 0 0;
+            color: #d7dbe3;
+            font-size: 13px;
+        }
+
+        #legend {
+            position: absolute;
+            right: 20px;
+            bottom: 35px;
+            width: 190px;
+            padding: 12px 14px;
+            border-radius: 4px;
+            background: rgba(15, 19, 28, 0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        #legend h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+        }
+
+        .legend-row {
+            display: flex;
+            min-height: 34px;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .city-dot {
+            display: inline-block;
+            flex: 0 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            opacity: 0.82;
+        }
+
+        #legend .source {
+            margin: 9px 0 0;
+            color: #c8ccd5;
+            font-size: 10px;
+            text-align: right;
+        }
+
+        #legend a {
+            color: #fff;
+        }
+
+        .mapboxgl-popup-content {
+            color: #20242d;
+        }
+
+        @media (max-width: 620px) {
+            #title-panel {
+                top: 10px;
+                width: calc(100% - 120px);
+                padding: 9px 12px;
+            }
+
+            #title-panel h1 {
+                font-size: 16px;
+            }
+
+            #legend {
+                right: 10px;
+                bottom: 25px;
+                width: 165px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <header id="title-panel">
+        <h1>Megacities and the Global Urban Hierarchy</h1>
+        <p>All Natural Earth cities are shown; red symbols identify cities with 10 million or more people.</p>
+    </header>
+
+    <aside id="legend" aria-label="Population legend">
+        <h3>Estimated population</h3>
+        <div id="legend-rows"></div>
+        <p class="source">Source: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a></p>
+    </aside>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZG91ZG91MDEyODE5IiwiYSI6ImNtdjdvZDN3ZzA5a3AyenEwZTV4ZnBwYnIifQ.pCGIuHdjcxeJ9ZO5WaiEWw';
+
+        // The dark basemap keeps the four population classes easy to compare worldwide.
+        const mymap = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v11',
+            center: [15, 22],
+            zoom: 1.35
+        });
+
+        mymap.addControl(new mapboxgl.NavigationControl());
+        mymap.addControl(new mapboxgl.FullscreenControl());
+
+        mymap.on('load', () => {
+            // The relative path begins in lab2 and points to the required local data file.
+            mymap.addSource('population', {
+                type: 'geojson',
+                data: 'data/world-cities.geojson'
+            });
+
+            mymap.addLayer({
+                id: 'population-layer',
+                type: 'circle',
+                source: 'population',
+                paint: {
+                    /*
+                     * Graduated classes show the urban hierarchy while retaining every city.
+                     * The breaks separate smaller places, million-plus cities, large metropolitan
+                     * areas, and megacities (10 million or more). Increasing radii make the upper
+                     * classes prominent, but this is a classed design rather than a claim that
+                     * circle area is exactly proportional to population.
+                     */
+                    'circle-radius': [
+                        'step',
+                        ['max', 0, ['to-number', ['get', 'pop_max'], 0]],
+                        2,
+                        1000000, 5,
+                        5000000, 9,
+                        10000000, 14
+                    ],
+                    /*
+                     * Cool blue colors keep most cities visible without dominating the map.
+                     * Orange marks large metropolitan areas, while red gives the megacity class
+                     * the strongest visual emphasis and supports the map's main argument.
+                     */
+                    'circle-color': [
+                        'step',
+                        ['max', 0, ['to-number', ['get', 'pop_max'], 0]],
+                        '#8da0b8',
+                        1000000, '#4eb3d3',
+                        5000000, '#fdae61',
+                        10000000, '#d7301f'
+                    ],
+                    'circle-opacity': 0.82,
+                    'circle-stroke-width': 0.8,
+                    'circle-stroke-color': 'rgba(255, 255, 255, 0.9)'
+                }
+            });
+
+            // The popup reports the two fields requested by the assignment, plus country context.
+            mymap.on('click', 'population-layer', (event) => {
+                const city = event.features[0];
+                const coordinates = city.geometry.coordinates.slice();
+                const name = city.properties.name || 'Unnamed place';
+                const country = city.properties.adm0name || 'Country not listed';
+                const population = Number(city.properties.pop_max);
+                const populationText = Number.isFinite(population) && population >= 0
+                    ? population.toLocaleString('en-US')
+                    : 'Not available';
+
+                // Keep the popup beside symbols that repeat across the antimeridian.
+                while (Math.abs(event.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += event.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(
+                        `<strong>${name}</strong><br>` +
+                        `${country}<br>` +
+                        `Population: ${populationText}`
+                    )
+                    .addTo(mymap);
+            });
+
+            mymap.on('mouseenter', 'population-layer', () => {
+                mymap.getCanvas().style.cursor = 'pointer';
+            });
+
+            mymap.on('mouseleave', 'population-layer', () => {
+                mymap.getCanvas().style.cursor = '';
+            });
+        });
+
+        // Legend values use the exact same class sizes and colors as the Mapbox step expressions.
+        const populationClasses = [
+            { label: 'Under 1 million', radius: 2, color: '#8da0b8' },
+            { label: '1–4.99 million', radius: 5, color: '#4eb3d3' },
+            { label: '5–9.99 million', radius: 9, color: '#fdae61' },
+            { label: '10 million or more', radius: 14, color: '#d7301f' }
+        ];
+
+        const legendRows = document.getElementById('legend-rows');
+        legendRows.innerHTML = populationClasses.map((item) => {
+            const diameter = item.radius * 2;
+            return (
+                '<div class="legend-row">' +
+                '<span class="city-dot" style="width:' + diameter + 'px;height:' +
+                diameter + 'px;background:' + item.color + ';"></span>' +
+                '<span>' + item.label + '</span>' +
+                '</div>'
+            );
+        }).join('');
+    </script>
+</body>
+</html>

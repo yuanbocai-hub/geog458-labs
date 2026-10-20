@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Earthquakes in the Past 30 Days</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* The map fills the browser window. */
+        #map {
+            position: absolute;
+            inset: 0;
+        }
+
+        /* The legend connects representative circle sizes and colors to magnitude. */
+        #legend {
+            position: absolute;
+            right: 20px;
+            bottom: 35px;
+            width: 130px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+            color: #222;
+            text-align: center;
+        }
+
+        #legend h3 {
+            margin: 0 0 8px;
+            font-size: 15px;
+        }
+
+        .break {
+            position: relative;
+            min-height: 40px;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        .dot {
+            display: inline-block;
+            margin-top: 4px;
+            border: 1px solid white;
+            border-radius: 50%;
+            opacity: 0.72;
+        }
+
+        .dot-label {
+            position: absolute;
+            right: 4px;
+            font-style: italic;
+        }
+
+        #legend .source {
+            margin: 8px 0 0;
+            font-size: 10px;
+            text-align: right;
+        }
+
+        #legend a {
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="legend"></div>
+
+    <script>
+        // This public token allows Mapbox GL JS to load the basemap in the browser.
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZG91ZG91MDEyODE5IiwiYSI6ImNtdjdvZDN3ZzA5a3AyenEwZTV4ZnBwYnIifQ.pCGIuHdjcxeJ9ZO5WaiEWw';
+
+        // Create a world-scale satellite globe for the global earthquake feed.
+        const mymap = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/satellite-v9',
+            projection: 'globe',
+            center: [-96, 37.8],
+            zoom: 1
+        });
+
+        // Add standard navigation tools without changing the data display.
+        mymap.addControl(new mapboxgl.NavigationControl());
+        mymap.addControl(new mapboxgl.FullscreenControl());
+
+        // Fog softens the edge of the globe after the satellite style is ready.
+        mymap.on('style.load', () => {
+            mymap.setFog({});
+        });
+
+        // Wait for the map to load before adding the external USGS source and layer.
+        mymap.on('load', () => {
+            mymap.addSource('earthquakes', {
+                type: 'geojson',
+                data: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
+            });
+
+            mymap.addLayer({
+                id: 'earthquakes-layer',
+                type: 'circle',
+                source: 'earthquakes',
+                paint: {
+                    // Larger magnitudes receive larger graduated radii.
+                    'circle-radius': [
+                        'interpolate', ['linear'],
+                        ['to-number', ['get', 'mag'], 0],
+                        1, 0.7,
+                        1.5, 2,
+                        2, 4,
+                        2.5, 5,
+                        3, 6,
+                        3.5, 7,
+                        4.5, 9,
+                        6.5, 15,
+                        8.5, 17,
+                        10.5, 20
+                    ],
+                    // The light-to-dark red scale makes stronger earthquakes stand out.
+                    'circle-color': [
+                        'interpolate', ['linear'],
+                        ['to-number', ['get', 'mag'], 0],
+                        1, '#fff7ec',
+                        1.5, '#fee8c8',
+                        2, '#fdd49e',
+                        2.5, '#fdbb84',
+                        3, '#fc8d59',
+                        3.5, '#ef6548',
+                        4.5, '#d7301f',
+                        6.5, '#b30000',
+                        8.5, '#7f0000',
+                        10.5, '#000000'
+                    ],
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': 'white',
+                    'circle-opacity': 0.72
+                }
+            });
+
+            // Click a circle to see the event's magnitude and reported location.
+            mymap.on('click', 'earthquakes-layer', (event) => {
+                const feature = event.features[0];
+                const coordinates = feature.geometry.coordinates.slice(0, 2);
+                const magnitude = feature.properties.mag ?? 'Not reported';
+                const place = feature.properties.place ?? 'Location not reported';
+
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(
+                        `<strong>Magnitude:</strong> ${magnitude}<br>` +
+                        `<strong>Location:</strong> ${place}`
+                    )
+                    .addTo(mymap);
+            });
+
+            // A pointer cursor signals that the earthquake symbols are clickable.
+            mymap.on('mouseenter', 'earthquakes-layer', () => {
+                mymap.getCanvas().style.cursor = 'pointer';
+            });
+
+            mymap.on('mouseleave', 'earthquakes-layer', () => {
+                mymap.getCanvas().style.cursor = '';
+            });
+        });
+
+        // These samples use the same magnitude stops, radii, colors, and opacity as the map.
+        const legend = document.getElementById('legend');
+        const grades = [2, 4.5, 8.5];
+        const radii = [4, 9, 17];
+        const colors = ['#fdd49e', '#d7301f', '#7f0000'];
+        const labels = ['<h3>Magnitude</h3>'];
+
+        for (let i = 0; i < grades.length; i++) {
+            const diameter = 2 * radii[i];
+            labels.push(
+                '<p class="break"><i class="dot" style="background:' + colors[i] +
+                '; width:' + diameter + 'px; height:' + diameter +
+                'px;"></i><span class="dot-label" style="top:' +
+                diameter / 2 + 'px;">' + grades[i] + '</span></p>'
+            );
+        }
+
+        labels.push(
+            '<p class="source">Source: <a href="https://earthquake.usgs.gov/earthquakes/" ' +
+            'target="_blank" rel="noopener">USGS</a></p>'
+        );
+        legend.innerHTML = labels.join('');
+    </script>
+</body>
+</html>

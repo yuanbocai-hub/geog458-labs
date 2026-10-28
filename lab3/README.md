@@ -6,6 +6,8 @@ This folder contains two maps that combine a local Mapbox-derived basemap, a the
 
 The guided map shows daily PM2.5 conditions around Puget Sound on July 5, 2025. It is meant for someone who wants a quick regional comparison while still being able to check the measured value at an individual monitor.
 
+![Puget Sound PM2.5 map](screenshots/puget-sound-pm25.png)
+
 - Study area: Tacoma to Marysville, including Seattle and Bremerton
 - Observations: 11 U.S. EPA AirData monitoring sites
 - Units: µg/m³, 24-hour block average
@@ -20,6 +22,8 @@ The raster surface is an estimate between monitors. The station popups report th
 ## 2. Pacific Northwest fire history
 
 The independent map looks at large fires in Washington, Oregon, and Idaho. It is designed for a regional planning or land-management audience interested in where large fires occurred and how the later record compares with the older pattern.
+
+![Pacific Northwest fire history map](screenshots/pacific-northwest-fire-history.png)
 
 - Historical raster: 523 MTBS fire centroids from 1985–1999
 - Interactive vector layer: 838 MTBS fire centroids from 2000–2014

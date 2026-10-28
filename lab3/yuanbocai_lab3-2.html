@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pacific Northwest Fire History</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.15.0/dist/maplibre-gl.css">
+  <style>
+    :root { --cream: #f4efe5; --charcoal: #292822; --rust: #b44b2b; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--charcoal); }
+    #map { position: absolute; inset: 0; background: #d9ddd8; }
+    #panel {
+      position: absolute; left: 18px; bottom: 22px; width: 310px;
+      max-width: calc(100% - 92px); max-height: calc(100% - 48px);
+      overflow: auto; padding: 18px 19px; background: rgba(244,239,229,.94);
+      border: 1px solid rgba(255,255,255,.65); border-radius: 4px 14px 4px 4px;
+      box-shadow: 0 6px 24px rgba(28,25,21,.23); backdrop-filter: blur(5px);
+    }
+    .eyebrow { margin: 0 0 4px; color: #7d583e; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0; font: 700 23px/1.08 Georgia, serif; }
+    .subtitle { margin: 8px 0 12px; color: #665d51; }
+    #status { margin: 9px 0; font-size: 12px; color: #665d51; }
+    .control { display: block; padding: 5px 0; font-weight: 650; cursor: pointer; }
+    input { accent-color: var(--rust); }
+    #legend { margin-top: 10px; padding-top: 10px; border-top: 1px solid #cabfae; }
+    #legend p { margin: 5px 0; }
+    .ramp { height: 12px; border-radius: 2px; background: linear-gradient(to right, #fff1bc, #f8b15a, #e66b35, #b73a2e, #64251f); }
+    .values { display: flex; justify-content: space-between; color: #6c6256; font-size: 11px; }
+    .note { font-size: 12px; color: #6c6256; }
+    .maplibregl-popup-content { white-space: pre-line; border-radius: 5px; }
+    @media (max-width: 620px) { #panel { left: 10px; bottom: 14px; width: 270px; padding: 15px; } }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <section id="panel">
+    <p class="eyebrow">Pacific Northwest · Fire history</p>
+    <h1>Large Fires, Then and Now</h1>
+    <p class="subtitle">A historical burn-size surface with later fire locations</p>
+    <p id="status">Loading local map layers…</p>
+    <label class="control"><input id="show-history" type="checkbox" checked> 1985–1999 burn-size surface</label>
+    <label class="control"><input id="show-fires" type="checkbox" checked> 2000–2014 fire locations</label>
+    <div id="legend">
+      <p><strong>Estimated fire size (acres)</strong></p>
+      <div class="ramp"></div>
+      <div class="values"><span>1k</span><span>3k</span><span>10k</span><span>30k</span><span>100k+</span></div>
+      <p class="note">The surface interpolates log fire size from older records. Circle size shows acreage for later fires.</p>
+    </div>
+  </section>
+
+  <script type="module">
+    import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.15.0/dist/maplibre-gl.mjs';
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: {
+        version: 8,
+        sources: {},
+        layers: [{ id: 'background', type: 'background', paint: { 'background-color': '#d9ddd8' } }]
+      },
+      center: [-120.55, 45.7],
+      zoom: 5.4,
+      minZoom: 5,
+      maxZoom: 8,
+      maxBounds: [[-125.2, 41.8], [-115.8, 49.2]]
+    });
+
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    map.addControl(new maplibregl.ScaleControl({ unit: 'imperial' }));
+
+    map.on('error', (event) => {
+      document.getElementById('status').textContent = 'A local layer did not load. Check its path in the browser console.';
+      console.error(event.error);
+    });
+
+    map.on('load', () => {
+      map.addSource('independent-basemap', {
+        type: 'raster',
+        tiles: ['assets/mapbox-independent/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        scheme: 'xyz',
+        minzoom: 5,
+        maxzoom: 8,
+        bounds: [-125, 42, -116, 49],
+        attribution: '© Mapbox © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      });
+      map.addLayer({
+        id: 'basemap', type: 'raster', source: 'independent-basemap',
+        paint: { 'raster-opacity': 1, 'raster-fade-duration': 0, 'raster-saturation': -0.45, 'raster-contrast': 0.08 }
+      });
+
+      map.addSource('wildfire-history-tiles', {
+        type: 'raster',
+        tiles: ['assets/wildfire-history/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        scheme: 'xyz',
+        minzoom: 5,
+        maxzoom: 8,
+        bounds: [-125, 42, -116, 49],
+        attribution: 'Fire records: Monitoring Trends in Burn Severity (MTBS)'
+      });
+      map.addLayer({
+        id: 'wildfire-history', type: 'raster', source: 'wildfire-history-tiles',
+        paint: { 'raster-opacity': 0.7, 'raster-fade-duration': 0 }
+      });
+
+      map.addSource('later-fires', { type: 'geojson', data: 'data/wildfires_2000_2014_pnw.geojson' });
+      map.addLayer({
+        id: 'later-fires', type: 'circle', source: 'later-fires',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['get', 'BurnBndAc'], 1000, 3, 25000, 8, 150000, 15],
+          'circle-color': ['interpolate', ['linear'], ['get', 'BurnBndAc'], 1000, '#f7c66b', 10000, '#e26d37', 50000, '#a92f28', 150000, '#541f1d'],
+          'circle-opacity': .74,
+          'circle-stroke-color': '#fff4dc',
+          'circle-stroke-width': .8
+        }
+      });
+
+      map.on('click', 'later-fires', (event) => {
+        const feature = event.features[0];
+        const fire = feature.properties;
+        const acres = Number(fire.BurnBndAc).toLocaleString();
+        new maplibregl.Popup({ offset: 7 })
+          .setLngLat(feature.geometry.coordinates)
+          .setText([
+            fire.Incid_Name || 'Unnamed fire',
+            'Ignition date: ' + (fire.Ig_Date || 'not recorded'),
+            'Mapped burn area: ' + acres + ' acres',
+            'Incident type: ' + (fire.Incid_Type || 'not recorded')
+          ].join('\n'))
+          .addTo(map);
+      });
+      map.on('mouseenter', 'later-fires', () => { map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', 'later-fires', () => { map.getCanvas().style.cursor = ''; });
+
+      document.getElementById('show-history').addEventListener('change', (event) => {
+        map.setLayoutProperty('wildfire-history', 'visibility', event.target.checked ? 'visible' : 'none');
+        document.getElementById('legend').hidden = !event.target.checked;
+      });
+      document.getElementById('show-fires').addEventListener('change', (event) => {
+        map.setLayoutProperty('later-fires', 'visibility', event.target.checked ? 'visible' : 'none');
+      });
+      document.getElementById('status').textContent = 'Click a circle to inspect a later fire record.';
+    });
+  </script>
+</body>
+</html>

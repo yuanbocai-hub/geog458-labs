@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Puget Sound PM2.5 | July 5, 2025</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.15.0/dist/maplibre-gl.css">
+  <style>
+    :root { --ink: #17313d; --paper: rgba(250, 250, 247, .94); --line: #d6ddd9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); }
+    #map { position: absolute; inset: 0; background: #e9efed; }
+    #panel {
+      position: absolute; top: 16px; left: 16px; width: 285px;
+      max-width: calc(100% - 92px); max-height: calc(100% - 72px);
+      padding: 17px 18px; overflow: auto; background: var(--paper);
+      border: 1px solid rgba(255,255,255,.75); border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(27, 48, 53, .16); backdrop-filter: blur(5px);
+    }
+    .eyebrow { margin: 0 0 3px; color: #60747a; font-size: 11px; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+    h1 { margin: 0; font: 700 21px/1.15 Georgia, serif; }
+    .subtitle { margin: 7px 0 13px; color: #53666c; }
+    #status { padding: 8px 10px; background: #edf3f1; border-left: 3px solid #315b68; border-radius: 3px; }
+    .control { display: block; padding: 5px 0; font-weight: 600; cursor: pointer; }
+    input { accent-color: #315b68; }
+    #legend { margin-top: 9px; padding-top: 10px; border-top: 1px solid var(--line); }
+    #legend p { margin: 5px 0; }
+    .ramp { height: 12px; border-radius: 3px; background: linear-gradient(to right, #ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026); }
+    .values { display: flex; justify-content: space-between; font-size: 11px; color: #53666c; }
+    .note { font-size: 12px; color: #60747a; }
+    .maplibregl-popup-content { white-space: pre-line; border-radius: 6px; box-shadow: 0 3px 14px rgba(0,0,0,.2); }
+    @media (max-width: 600px) { #panel { top: 10px; left: 10px; width: 250px; padding: 14px; } }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <section id="panel">
+    <p class="eyebrow">GEOG 458 · Lab 3</p>
+    <h1>Puget Sound Air Check</h1>
+    <p class="subtitle">Daily PM2.5 summary · July 5, 2025</p>
+    <p id="status">Loading local map layers…</p>
+    <label class="control"><input id="show-surface" type="checkbox" checked> Estimated PM2.5 surface</label>
+    <label class="control"><input id="show-stations" type="checkbox" checked> EPA monitoring stations</label>
+    <div id="legend">
+      <p><strong>Estimated PM2.5 (µg/m³)</strong></p>
+      <div class="ramp"></div>
+      <div class="values"><span>4</span><span>6.5</span><span>9</span><span>11.5</span><span>14</span></div>
+      <p class="note">IDW estimates conditions between monitors. Click a station for its measured value.</p>
+    </div>
+  </section>
+
+  <script type="module">
+    import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.15.0/dist/maplibre-gl.mjs';
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: {
+        version: 8,
+        sources: {},
+        layers: [{ id: 'background', type: 'background', paint: { 'background-color': '#e9efed' } }]
+      },
+      center: [-122.37, 47.62],
+      zoom: 9.25,
+      minZoom: 8,
+      maxZoom: 12,
+      maxBounds: [[-122.75, 47.10], [-122.05, 48.15]]
+    });
+
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }));
+
+    map.on('error', (event) => {
+      document.getElementById('status').textContent = 'A local file did not load. Check the path in the browser console.';
+      console.error(event.error);
+    });
+
+    map.on('load', () => {
+      map.addSource('basemap-tiles', {
+        type: 'raster',
+        tiles: ['assets/mapbox-guided/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        scheme: 'xyz',
+        minzoom: 8,
+        maxzoom: 12,
+        bounds: [-122.75, 47.10, -122.05, 48.15],
+        attribution: '© Mapbox © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      });
+      map.addLayer({
+        id: 'basemap', type: 'raster', source: 'basemap-tiles',
+        paint: { 'raster-opacity': 1, 'raster-fade-duration': 0, 'raster-saturation': -0.18 }
+      });
+
+      map.addSource('pm25-tiles', {
+        type: 'raster',
+        tiles: ['assets/pm25-guided/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        scheme: 'xyz',
+        minzoom: 8,
+        maxzoom: 12,
+        bounds: [-122.75, 47.10, -122.05, 48.15],
+        attribution: 'PM2.5: U.S. EPA AirData, 2025-07-05; IDW and map by Yuanbo Cai'
+      });
+      map.addLayer({
+        id: 'pm25-surface', type: 'raster', source: 'pm25-tiles',
+        paint: { 'raster-opacity': 0.67, 'raster-fade-duration': 0 }
+      });
+
+      map.addSource('station-data', { type: 'geojson', data: 'data/pm25_stations.geojson' });
+      map.addLayer({
+        id: 'stations', type: 'circle', source: 'station-data',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['get', 'pm25'], 4, 5, 14, 9],
+          'circle-color': '#173f54',
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 2,
+          'circle-opacity': .95
+        }
+      });
+
+      map.on('click', 'stations', (event) => {
+        const feature = event.features[0];
+        const station = feature.properties;
+        new maplibregl.Popup({ offset: 8 })
+          .setLngLat(feature.geometry.coordinates)
+          .setText([
+            station.station_name,
+            'Measured PM2.5: ' + station.pm25 + ' ' + station.units,
+            'Date: ' + station.date,
+            'Station ID: ' + station.station_id
+          ].join('\n'))
+          .addTo(map);
+      });
+      map.on('mouseenter', 'stations', () => { map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', 'stations', () => { map.getCanvas().style.cursor = ''; });
+
+      document.getElementById('show-surface').addEventListener('change', (event) => {
+        map.setLayoutProperty('pm25-surface', 'visibility', event.target.checked ? 'visible' : 'none');
+        document.getElementById('legend').hidden = !event.target.checked;
+      });
+      document.getElementById('show-stations').addEventListener('change', (event) => {
+        map.setLayoutProperty('stations', 'visibility', event.target.checked ? 'visible' : 'none');
+      });
+      document.getElementById('status').textContent = 'Compare the surface with measured station values.';
+    });
+  </script>
+</body>
+</html>

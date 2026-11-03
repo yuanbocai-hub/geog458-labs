@@ -1,0 +1,21 @@
+* { box-sizing: border-box; }
+body { margin: 0; font: 14px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #263b34; }
+#map { position: absolute; inset: 0; }
+.panel { position: absolute; top: 20px; left: 20px; width: 285px; padding: 20px; background: rgba(255,253,247,.96); border-top: 4px solid #376e58; border-radius: 3px; box-shadow: 0 3px 18px #23382b24; }
+.eyebrow { margin: 0 0 5px; color: #65776d; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+h1 { font: 600 25px/1.12 Georgia, serif; margin: 0 0 10px; }
+p { margin: 10px 0; }
+.small, #status, #mode-label { font-size: 12px; color: #54675e; }
+.legend { margin-top: 16px; padding-top: 12px; border-top: 1px solid #d9dfd6; font-size: 12px; }
+.ramp { height: 10px; margin: 6px 0 3px; background: linear-gradient(90deg,#e8f3c8,#b5d69a,#69b19b,#278b87,#14565a); border-radius: 2px; }
+.labels { display: flex; justify-content: space-between; font-size: 11px; }
+.views { display: flex; gap: 6px; margin: 14px 0 8px; }
+button { padding: 7px 14px; border: 1px solid #bdb6ad; border-radius: 3px; background: #fffdf7; color: #443645; font: inherit; cursor: pointer; }
+button[aria-pressed='true'] { color: white; background: #71415f; border-color: #71415f; }
+button:disabled { cursor: wait; opacity: .5; }
+.pokemon { border-top-color: #985b49; color: #443645; }
+.pokemon .ramp { background: linear-gradient(90deg,#fff3c4,#f8ca83,#ee966b,#c65d63,#713c64); }
+a { color: #54675e; }
+.mapboxgl-popup-content { padding: 12px; font-size: 14px; }
+.popup-image { display: block; width: 400px; max-width: 100%; max-height: 65vh; object-fit: contain; margin-top: 8px; }
+@media(max-width:600px) { .panel { top: 10px; left: 10px; width: 235px; padding: 13px; } h1 { font-size: 21px; } .small { font-size: 11px; } }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pittsburgh street trees | Lab 4</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+  <link href="map.css" rel="stylesheet">
+</head>
+<body>
+  <div id="map"></div>
+  <aside class="panel">
+    <p class="eyebrow">GEOG 458 · Pittsburgh</p>
+    <h1>Street trees,<br>seen together</h1>
+    <p>Tree locations weighted by trunk diameter.</p>
+    <p class="small">Zoom in to see individual trees. Click a circle to check its DBH.</p>
+    <div class="legend">Relative DBH-weighted concentration<div class="ramp"></div><div class="labels"><span>Lower</span><span>Higher</span></div></div>
+    <p class="small">DBH is diameter at breast height. This is a tree-size proxy, not measured canopy cover.</p>
+    <div id="status">Loading street trees…</div>
+    <p class="small">Source: <a href="https://data.wprdc.org/dataset/city-trees" target="_blank" rel="noopener">WPRDC / City of Pittsburgh</a><br>Course dataset · Yuanbo Cai</p>
+  </aside>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZG91ZG91MDEyODE5IiwiYSI6ImNtdjdvZDN3ZzA5a3AyenEwZTV4ZnBwYnIifQ.pCGIuHdjcxeJ9ZO5WaiEWw';
+    const map = new mapboxgl.Map({
+      container: 'map', style: 'mapbox://styles/mapbox/light-v11',
+      center: [-79.95, 40.44], zoom: 11, minZoom: 10, maxZoom: 15
+    });
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.addControl(new mapboxgl.ScaleControl(), 'bottom-left');
+    map.on('load', async () => {
+      map.setFog({});
+      try {
+        const response = await fetch('data/trees.geojson');
+        if (!response.ok) throw new Error('Tree data could not be loaded.');
+        const trees = await response.json();
+        map.addSource('trees', {type: 'geojson', data: trees});
+        map.addLayer({
+          id: 'trees-heat', type: 'heatmap', source: 'trees', maxzoom: 15,
+          paint: {
+            'heatmap-weight': ['interpolate', ['linear'], ['get', 'dbh'], 1, 0, 62, 1],
+            'heatmap-radius': 10,
+            'heatmap-intensity': 0.15,
+            'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'],
+              0, 'rgba(232,243,200,0)', .2, '#e8f3c8', .4, '#b5d69a',
+              .6, '#69b19b', .8, '#278b87', 1, '#14565a'],
+            'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 14, 1, 15, 0]
+          }
+        });
+        map.addLayer({
+          id: 'trees-point', type: 'circle', source: 'trees', minzoom: 14,
+          paint: {
+            'circle-radius': ['interpolate', ['linear'], ['zoom'],
+              14, ['interpolate', ['linear'], ['get','dbh'], 1, 3, 62, 7],
+              15, ['interpolate', ['linear'], ['get','dbh'], 1, 5, 62, 10]],
+            'circle-color': ['interpolate', ['linear'], ['get','dbh'], 1, '#b5d69a', 62, '#14565a'],
+            'circle-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
+            'circle-stroke-color': '#fffdf7', 'circle-stroke-width': 1,
+            'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1]
+          }
+        });
+        map.on('click', 'trees-point', event => {
+          const tree = event.features[0];
+          new mapboxgl.Popup().setLngLat(tree.geometry.coordinates)
+            .setText(`DBH: ${tree.properties.dbh}`).addTo(map);
+        });
+        map.on('mouseenter', 'trees-point', () => map.getCanvas().style.cursor = 'pointer');
+        map.on('mouseleave', 'trees-point', () => map.getCanvas().style.cursor = '');
+        document.getElementById('status').textContent = `${trees.features.length.toLocaleString()} trees loaded`;
+      } catch (error) { document.getElementById('status').textContent = error.message; }
+    });
+  </script>
+</body>
+</html>

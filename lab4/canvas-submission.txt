@@ -1,0 +1,25 @@
+Repository URL: https://github.com/yuanbocai-hub/geog458-labs/tree/main/lab4
+GitHub Pages — Lab 4-1: https://yuanbocai-hub.github.io/geog458-labs/lab4/lab4-1.html
+GitHub Pages — Lab 4-2: https://yuanbocai-hub.github.io/geog458-labs/lab4/lab4-2.html
+
+Lab 4-1 — Changes and considerations
+
+Comparison: Pittsburgh, centered at [-79.95, 40.44], zoom 11; 31,597 trees.
+Radius baseline: zoom 11 = 15 px, zoom 15 = 20 px.
+Radius trials: 10, 15, 22, and 35 px, with intensity held at 1.
+Intensity baseline: zoom 11 = 1, zoom 15 = 3.
+Intensity trials: 1, 0.15, 0.5, and 1.4, with radius held at 10 px.
+Final: fixed radius 10 px and intensity 0.15; light-v11 basemap and a light-green-to-dark-teal ramp.
+
+At 10 px, smaller concentrations south of downtown stayed separate, while 22 and 35 px joined many of them into broad patches. The larger radii also made the concentration east of downtown look much more continuous. At radius 10, intensities of 0.5 and 1.4 made much of the eastern concentration the same dark color, so I chose 0.15 to show more variation within it. The smaller radius gives up some smoothness, but it keeps local gaps visible and leaves the street context easier to read. DBH weighting gives larger trees more influence, so the pattern combines tree size and location rather than simply counting trees; it still does not measure actual canopy cover. I kept the fade to individual circles at zoom 14–15 and the DBH popup so the underlying records can be checked.
+
+Lab 4-2 — Changes and considerations
+
+Comparison: UW Seattle, centered at [-122.3078, 47.655], zoom 14; the same saved set of 212 class encounters in every trial.
+Radius baseline: zoom 13 = 15 px, zoom 17 = 30 px; 18.75 px at zoom 14.
+Radius trials: 10, 18.75, 28, and 45 px, with intensity held at 1.5.
+Intensity baseline: zoom 13 = 1, zoom 17 = 3; 1.5 at zoom 14.
+Intensity trials: 1.5, 0.7, 1.1, and 2.5, with radius held at 28 px.
+Final: fixed radius 28 px and intensity 1.1; outdoors-v12 basemap, a yellow/orange/plum ramp, and opacity 0.78. Every encounter keeps equal weight.
+
+At 10 px, many campus observations looked like separate dots, while 45 px merged much of central campus around Red Square into one broad area. I chose 28 px because it connects nearby observations without absorbing as many of the smaller surrounding concentrations. With that radius fixed, 0.7 made the weaker clusters faint, while 2.5 pushed more of the map toward the darkest color; 1.1 kept a clearer difference between the central concentration and the smaller patches. The warmer ramp stands out against the campus roads and green spaces, and Points view still lets the reader inspect each encounter's name and photograph. These are relative encounter concentrations shaped by where students walked, stopped, and took pictures, so a sparse area does not necessarily have fewer Pokemon. The published page reloads the live class sheet, so its encounter count may change after these trials.

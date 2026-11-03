@@ -1,0 +1,11 @@
+# Lab 4
+
+[Pittsburgh trees](https://yuanbocai-hub.github.io/geog458-labs/lab4/lab4-1.html) · [UW Pokémon encounters](https://yuanbocai-hub.github.io/geog458-labs/lab4/lab4-2.html)
+
+The tree map uses the course GeoJSON of 31,597 Pittsburgh street trees from WPRDC. DBH is mapped from 1–62 to a weight of 0–1. Values below the first stop receive zero weight. The final heatmap uses a fixed 10 px radius and 0.15 intensity. It fades between zoom 14 and 15 as individual tree circles appear. The circles retain DBH-based sizes and DBH popups. The light-v11 basemap and green/teal ramp replace the original dark basemap and blue ramp.
+
+The Pokémon map requests the class Google Sheet CSV on each reload and converts Latitude/Longitude to GeoJSON. Points and heatmap use the same source. Each encounter has equal weight. The final settings are a fixed 28 px radius, 1.1 intensity, and 0.78 opacity, with outdoors-v12 and a yellow/orange/plum ramp. Image links are trimmed and GitHub blob links are converted to direct image URLs. A saved copy of the 212 class encounters downloaded on November 2, 2026 is used only if the live request fails; the status identifies which source loaded. A few class coordinates fall outside campus, so the initial view stays at UW rather than fitting every point.
+
+Parameter comparisons used the same center, zoom, colors, weights, and opacity within each map. Tree radii 10, 15, 22, and 35 px were compared at intensity 1, then intensities 0.15, 0.5, and 1.4 were compared at radius 10. The tree center was [-79.95, 40.44], zoom 11. Pokémon radii 10, 18.75, 28, and 45 px were compared at intensity 1.5, then intensities 0.7, 1.1, and 2.5 were compared at radius 28. The campus center was [-122.3078, 47.655], zoom 14, using the same 212-encounter snapshot for every trial. Only the selected final maps are published.
+
+Sources: [WPRDC trees](https://data.wprdc.org/dataset/city-trees), the course-supplied trees.geojson, and the [class Google Sheet](https://docs.google.com/spreadsheets/d/12rOwVWdC0tXeS-peDuKQ7i9CtUEMnC1QoVJ3QZcZMu8/edit). Map display uses Mapbox GL JS. Basemaps credit Mapbox and OpenStreetMap. Encounter photographs remain at their contributors' image URLs.

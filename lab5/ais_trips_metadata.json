@@ -25,5 +25,6 @@
   "selection_end_utc_exclusive": "2025-07-16T00:00:00Z",
   "bulk_rows_scanned": 9274961,
   "conversion_notebook": "https://colab.research.google.com/drive/1tDjfzKDm-xFKtkNh5hsq2IVD2lT_UOnK",
-  "conversion_execution": "Course notebook function executed locally without modifying the conversion logic."
+  "conversion_execution": "Course conversion function executed in Google Colab; compressed CSV decompressed before conversion, with conversion logic unchanged.",
+  "conversion_run_date_utc": "2026-11-10"
 }

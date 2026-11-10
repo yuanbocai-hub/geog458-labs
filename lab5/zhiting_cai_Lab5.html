@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>A day on Puget Sound | zhiting cai</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+  <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body { margin: 0; font: 14px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #e8ede9; background: #172b38; }
+    #map { position: fixed; inset: 0; }
+    #panel { position: fixed; top: 24px; left: 24px; width: 300px; padding: 22px; max-height: calc(100dvh - 80px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #87948e #1b272d; background: rgba(27,39,45,.97); border-top: 3px solid #eabf78; border-radius: 3px; box-shadow: 0 4px 24px #0004; }
+    .eyebrow { margin: 0 0 8px; font-size: 11px; letter-spacing: .12em; color: #c4bba8; text-transform: uppercase; }
+    h1 { margin: 0; font: 500 29px/1.12 Georgia, serif; }
+    .intro { margin: 12px 0 20px; color: #bac6c8; font-size: 13px; }
+    label { display: block; font-size: 12px; color: #becaca; margin: 12px 0 6px; }
+    select { width: 100%; padding: 8px; background: #263a43; border: 1px solid #65767a; border-radius: 3px; color: #f4f0e7; font: inherit; }
+    #status { margin: 9px 0 18px; color: #d7c5a8; font-size: 12px; }
+    .clock-row { display: flex; align-items: center; gap: 14px; border-top: 1px solid #4b5a60; padding-top: 16px; }
+    button { padding: 8px 17px; border: 0; border-radius: 3px; background: #eabf78; color: #25343a; cursor: pointer; font: inherit; font-weight: 600; }
+    button:hover { background: #f8d89c; }
+    button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid #eabf78; outline-offset: 3px; }
+    button:disabled, select:disabled { opacity: .5; cursor: wait; }
+    #time-display { display: block; font-size: 13px; font-variant-numeric: tabular-nums; color: #f5f0e7; }
+    .clock-note, .small { font-size: 11px; color: #b2bec0; }
+    #time-slider { display: block; width: 100%; margin: 10px 0; accent-color: #eabf78; cursor: pointer; }
+    .ends { display: flex; justify-content: space-between; font-size: 10px; color: #aebbc0; }
+    .footnote { border-top: 1px solid #4b5a60; padding-top: 13px; margin: 17px 0 0; font-size: 11px; color: #b2bec0; }
+    a { color: #e4d1ad; }
+    #trail-key { display: inline-block; width: 22px; height: 3px; background: #eabf78; margin: 0 7px 3px 0; }
+    .error { color: #ffc2b0 !important; }
+    @media(max-height:700px) { #panel { top: 12px; left: 12px; padding: 15px; } h1 { font-size: 24px; } h1 br { display: none; } .eyebrow { margin-bottom: 4px; } .intro { margin: 8px 0 10px; font-size: 11px; } label { margin-top: 8px; } #status { margin: 7px 0 10px; } .clock-row { padding-top: 10px; } .footnote { margin-top: 10px; padding-top: 9px; } }
+    @media(max-width:600px) { #panel { width: calc(100% - 24px); left: 12px; top: auto; bottom: 40px; padding: 14px; max-height: 43dvh; } h1 { font-size: 23px; } h1 br { display: none; } .eyebrow { font-size: 10px; margin-bottom: 5px; } .intro { margin: 7px 0 10px; font-size: 11px; } label { margin-top: 8px; } #status { margin-bottom: 10px; } .clock-row { padding-top: 10px; } }
+  </style>
+</head>
+<body>
+  <div id="map" aria-label="Animated vessel tracks in central Puget Sound"></div>
+  <aside id="panel">
+    <p class="eyebrow">Central Sound · GEOG 458</p>
+    <h1>A day on <br>Puget Sound</h1>
+    <p class="intro">Seattle, Bainbridge &amp; Edmonds<br>AIS observations · July 15, 2025 UTC</p>
+    <label for="vessel-type">Vessel type</label>
+    <select id="vessel-type" disabled>
+      <option value="passenger" selected>Passenger</option>
+      <option value="tanker">Tanker</option>
+      <option value="cargo">Cargo</option>
+      <option value="other">Other vessels</option>
+    </select>
+    <p id="status" role="status">Loading vessel paths…</p>
+    <div class="clock-row">
+      <button id="play-stop" type="button" aria-pressed="true" disabled>Stop</button>
+      <div><span class="clock-note">Seattle data time</span><time id="time-display">Loading…</time></div>
+    </div>
+    <label for="time-slider">Choose a moment (PDT / PST)</label>
+    <input id="time-slider" type="range" min="0" max="1" value="0" step="1" disabled>
+    <div class="ends"><span id="range-start"></span><span id="range-end"></span></div>
+    <label for="playback-speed">Data time per real second</label>
+    <select id="playback-speed" disabled>
+      <option value="300">5 minutes</option>
+      <option value="900" selected>15 minutes</option>
+      <option value="1800">30 minutes</option>
+      <option value="3600">1 hour</option>
+    </select>
+    <p class="small"><span id="trail-key"></span>Previous hour of reported movement.<br>Drag the time slider to pause and inspect.</p>
+    <p class="footnote">47.45–47.90° N · 122.70–122.25° W<br>NOAA / BOEM / USCG <a href="https://marinecadastre.gov/accessais/" target="_blank" rel="noopener">AccessAIS</a><br><a href="https://github.com/yuanbocai-hub/geog458-labs/tree/main/lab5#readme" target="_blank" rel="noopener">Data &amp; interpretation</a> · zhiting cai</p>
+  </aside>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZG91ZG91MDEyODE5IiwiYSI6ImNtdjdvZDN3ZzA5a3AyenEwZTV4ZnBwYnIifQ.pCGIuHdjcxeJ9ZO5WaiEWw';
+    const map = new mapboxgl.Map({container: 'map', style: 'mapbox://styles/mapbox/dark-v11',
+      center: [-122.475, 47.675], zoom: 9.6, minZoom: 8, maxZoom: 15, antialias: true});
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.addControl(new mapboxgl.ScaleControl(), 'bottom-left');
+    const mapReady = new Promise(resolve => map.once('load', resolve));
+    const status = document.getElementById('status');
+    const vesselType = document.getElementById('vessel-type');
+    const playStop = document.getElementById('play-stop');
+    const timeSlider = document.getElementById('time-slider');
+    const playbackSpeed = document.getElementById('playback-speed');
+    const timeDisplay = document.getElementById('time-display');
+    const colors = {passenger: [234,191,120], tanker: [239,143,120], cargo: [139,210,191], other: [190,175,219]};
+    let displayedTrips = [], playing = true, currentTime = 0, previousFrame = null;
+    let secondsPerSecond = 900;
+    let overlay;
+
+    async function main() {
+      const [tripsResponse, metadataResponse] = await Promise.all([
+        fetch('./ais_trips.json'), fetch('./ais_trips_metadata.json')]);
+      if (!tripsResponse.ok || !metadataResponse.ok) throw new Error('Could not load the AIS JSON files.');
+      const [data, metadata] = await Promise.all([tripsResponse.json(), metadataResponse.json()]);
+      if (!Array.isArray(data)) throw new Error('The vessel JSON must be an array.');
+      const timeOrigin = Date.parse(metadata.time_origin_utc);
+      if (!Number.isFinite(timeOrigin)) throw new Error('The UTC time origin is invalid.');
+      const trips = data.filter(d => Array.isArray(d.path) && Array.isArray(d.timestamps) &&
+        d.path.length >= 2 && d.path.length === d.timestamps.length);
+      if (!trips.length) throw new Error('No paths with at least two positions were found.');
+      const startTime = Math.min(...trips.map(d => d.timestamps[0]));
+      const lastReport = Math.max(...trips.map(d => d.timestamps[d.timestamps.length - 1]));
+      const endTime = lastReport + 3600;
+      currentTime = Math.min(startTime + 3600, endTime);
+      const timeFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23', timeZoneName: 'short'});
+      const shortFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
+      timeSlider.min = String(startTime);
+      timeSlider.max = String(endTime);
+      document.getElementById('range-start').textContent = shortFormatter.format(new Date(timeOrigin + startTime * 1000));
+      document.getElementById('range-end').textContent = shortFormatter.format(new Date(timeOrigin + endTime * 1000));
+      await mapReady;
+      if (map.getLayer('water')) map.setPaintProperty('water', 'fill-color', '#15384a');
+      if (map.getLayer('poi-label')) map.setLayoutProperty('poi-label', 'visibility', 'none');
+      const labelLayer = map.getStyle().layers.find(layer => layer.type === 'symbol')?.id;
+      overlay = new deck.MapboxOverlay({interleaved: true, layers: []});
+      map.addControl(overlay);
+
+      function updateTimeUI() {
+        const date = new Date(timeOrigin + Math.floor(currentTime) * 1000);
+        timeDisplay.dateTime = date.toISOString();
+        timeDisplay.textContent = timeFormatter.format(date);
+        timeSlider.value = String(Math.floor(currentTime));
+        timeSlider.setAttribute('aria-valuetext', timeDisplay.textContent);
+      }
+      function draw() {
+        overlay.setProps({layers: [new deck.TripsLayer({
+          id: 'vessel-trips', data: displayedTrips, getPath: d => d.path,
+          getTimestamps: d => d.timestamps, getColor: colors[vesselType.value],
+          currentTime, trailLength: 3600, fadeTrail: true, widthMinPixels: 2.5,
+          capRounded: true, jointRounded: true, opacity: .9, beforeId: labelLayer
+        })]});
+        updateTimeUI();
+      }
+      function applyFilter() {
+        displayedTrips = trips.filter(d => {
+          const type = Number(d.type);
+          if (vesselType.value === 'passenger') return type >= 60 && type < 70;
+          if (vesselType.value === 'tanker') return type >= 80 && type < 90;
+          if (vesselType.value === 'cargo') return type >= 70 && type < 80;
+          return !(type >= 60 && type < 90);
+        });
+        status.textContent = `${displayedTrips.length} paths selected`;
+        const rgb = colors[vesselType.value];
+        document.getElementById('trail-key').style.background = `rgb(${rgb.join(',')})`;
+        draw();
+      }
+      function setPlaying(value) {
+        playing = value;
+        previousFrame = null;
+        playStop.textContent = playing ? 'Stop' : 'Play';
+        playStop.setAttribute('aria-pressed', String(playing));
+      }
+      vesselType.addEventListener('change', applyFilter);
+      playStop.addEventListener('click', () => setPlaying(!playing));
+      timeSlider.addEventListener('input', () => {
+        setPlaying(false);
+        currentTime = Math.max(startTime, Math.min(endTime, Number(timeSlider.value)));
+        draw();
+      });
+      playbackSpeed.addEventListener('change', () => {
+        secondsPerSecond = Number(playbackSpeed.value);
+        previousFrame = null;
+      });
+      document.addEventListener('visibilitychange', () => { previousFrame = null; });
+      [vesselType, playStop, timeSlider, playbackSpeed].forEach(control => control.disabled = false);
+      applyFilter();
+      function animate(now) {
+        if (previousFrame !== null && playing && !document.hidden) {
+          const elapsed = Math.max(0, (now - previousFrame) / 1000);
+          currentTime += elapsed * secondsPerSecond;
+          if (currentTime > endTime) currentTime = startTime + (currentTime - startTime) % (endTime - startTime);
+          draw();
+        }
+        previousFrame = now;
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    }
+    main().catch(error => { status.textContent = error.message; status.classList.add('error'); console.error(error); });
+  </script>
+</body>
+</html>

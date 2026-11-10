@@ -1,0 +1,29 @@
+{
+  "time_origin_utc": "2025-07-15T00:00:00+00:00",
+  "timestamp_unit": "seconds since time_origin_utc",
+  "coordinate_order": [
+    "longitude",
+    "latitude"
+  ],
+  "sog_unit": "knots",
+  "angle_unit": "degrees",
+  "input_rows": 258228,
+  "invalid_rows_removed": 0,
+  "duplicate_rows_removed": 2023,
+  "output_observations": 256205,
+  "vessel_count": 759,
+  "max_timestamp": 86399.0,
+  "source": "https://noaaocm.blob.core.windows.net/ais/csv2/csv2025/ais-2025-07-15.csv.zst",
+  "source_portal": "https://marinecadastre.gov/accessais/",
+  "selection_bounds_wsen": [
+    -122.7,
+    47.45,
+    -122.25,
+    47.9
+  ],
+  "selection_start_utc": "2025-07-15T00:00:00Z",
+  "selection_end_utc_exclusive": "2025-07-16T00:00:00Z",
+  "bulk_rows_scanned": 9274961,
+  "conversion_notebook": "https://colab.research.google.com/drive/1tDjfzKDm-xFKtkNh5hsq2IVD2lT_UOnK",
+  "conversion_execution": "Course notebook function executed locally without modifying the conversion logic."
+}

@@ -10,8 +10,23 @@ Chapter references:
 
 - Chapter 1: pp. 341–343, the investigation and departure from Mipi.
 - Chapter 2: pp. 348 and 351, Pe, Gyala, the rapids, and altitude observations.
-- Chapter 3: pp. 342, 349 and 351, the earlier Kinthup account as discussed by Bailey and the roughly 30-foot non-vertical drop at Pemakochung. The 150-foot and later 50-foot reports are attributed through Bailey; this story does not independently verify Kinthup's original account.
+- Chapter 3: pp. 342, 348–349 and 351, the small monastery, the earlier Kinthup account as discussed by Bailey and the roughly 30-foot non-vertical drop at Pemakochung. The 150-foot and later 50-foot reports are attributed through Bailey; this story does not independently verify Kinthup's original account. The distinction between the region and the site, and the religious background, use the additional sources below.
 - Chapter 4: pp. 349–352, the split from Morshead, the cliff, Monba information, and the approximate junction and 5,700-foot altitude estimate. That height was not measured at Gompo Ne.
+
+## Pemakö, Pemakochung and the hidden-land tradition
+
+These names refer to different geographical scales. Pemakö / Pemako (Tibetan པདྨ་བཀོད་, Wylie pad ma bkod) is commonly translated as “Lotus Array.” Pemaköchung / Pemakochung adds chung, “small,” giving “Little Pemakö.” Bailey's RGS article calls Pemakochung a small monastery, rather than using that name for the whole region (p. 348).
+
+The regional definition comes from a separate publication: F. M. Bailey, *Report on an Exploration on the North-East Frontier* (Simla: Government Monotype Press, 1914), Chapter I, §3 “Pemako,” pp. 2–3. In the combined local report PDF this passage begins on scan page 33. Bailey describes Pemako as the Tsangpo valley below the gorge and explicitly treats its boundaries as indefinite. His account discusses places including Kapu, Giling, Makti, Meto and Rinchenpung in this valley. The English gloss “Little Pemako” also appears in the place-name glossary, Appendix I, of H. T. Morshead's separate survey report, included earlier in the same combined PDF (scan page 19). These report references should not be confused with the page numbers of the RGS article.
+
+Kerstin Grothmann, “Population History and Identity in the Hidden Land of Pemakö,” *Journal of Bhutan Studies* 26 (2012): 21–52, identifies Tuting, Geling and Singa as southern Pemakö (p. 21), discusses the region's approximate extent (pp. 22–23), and explains hidden-land traditions of refuge and their relation to migration (pp. 26–30). This cultural and religious region should not be reduced to modern Metog County or to the monastery at Pemakochung. The sanctuary tradition supplies regional context; the story does not claim that a particular group found refuge in this monastery during the 1913 visit.
+
+- [Grothmann's article](https://d1i1jdw69xsqx0.cloudfront.net/digitalhimalaya/collections/journals/jbs/pdf/JBS_26_02.pdf)
+- [Rigpa Wiki: Pemakö, Tibetan spelling and “Lotus Array”](https://www.rigpawiki.org/index.php?title=Pemak%C3%B6)
+- [Lotsawa House: Pemakö texts and the sanctuary tradition](https://www.lotsawahouse.org/topics/pemako/)
+- [Jatsön Nyingpo's guidebook, in translation](https://www.lotsawahouse.org/tibetan-masters/jatson-nyingpo/pemako-guidebook)
+
+中文释名备注：“白马狗熊”若作为 Pemakochung 的音译使用，应按音译理解；这些汉字不是藏文地名的语义。“小 Pemakö”也不是墨脱县城或 Kapu 的另一种写法，不能把整个 Pemakö 区域的事件都定位到这个寺院点上。
 
 ## Spatial data
 

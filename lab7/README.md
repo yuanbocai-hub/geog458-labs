@@ -8,4 +8,4 @@ Open this folder in VS Code and choose **Open with Live Server** on `index.html`
 
 Scroll through the chapters or use the navigation. The map key includes a choice of 2-second and 4-second flights. Clicking a marked place opens a short evidence note. Each restored photograph links to the original scan.
 
-`config.js` holds the story and camera settings. `index.html` builds the sections and handles chapter activation. `style.css` controls the layout. Local images and GeoJSON are included. `reflection.md` addresses the four reflection questions, and `sources.md` records historical references, spatial limitations and image credits.
+`story.md` is the editable narrative. Its chapter text is synchronized into `config.js` for the published website. `config.js` also holds the camera settings. `index.html` builds the sections and handles chapter activation. `style.css` controls the layout. Local images and GeoJSON are included. `reflection.md` addresses the four reflection questions, and `sources.md` records historical references, spatial limitations and image credits.

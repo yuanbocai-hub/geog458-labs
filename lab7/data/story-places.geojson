@@ -1,0 +1,125 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          95.17525868461914,
+          29.8408467
+        ]
+      },
+      "properties": {
+        "place_id": "BM1913-P014",
+        "historical_label": "Gompone",
+        "display_label": "Gompo Ne (map: Gompone)",
+        "evidence_class": "inferred",
+        "evidence_title": "Reported and inferred",
+        "evidence_note": "Gompo Ne in the text: approximate junction placement and a river altitude estimated at about 5,700 feet.",
+        "journal_pages": "351-352",
+        "geometry_method": "symbol_anchor",
+        "georef_status": "poly2-extrapolated-unsafe",
+        "position_note": "Approximate historical-map location; manually edited working geometry. Coordinates are not a modern surveyed fix.",
+        "source_version": "east-of-Milin working points, derived from v4.1; feature.geometry retained",
+        "source_url": "https://www.jstor.org/stable/1778591"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          95.06581152906993,
+          29.75793518253514
+        ]
+      },
+      "properties": {
+        "place_id": "BM1913-P015",
+        "historical_label": "Pemakochung Falls",
+        "display_label": "Pemakochung Falls",
+        "evidence_class": "visited",
+        "evidence_title": "Direct observation",
+        "evidence_note": "Bailey describes a roughly 30-foot non-vertical drop near Pemakochung.",
+        "journal_pages": "349, 351",
+        "geometry_method": "symbol_anchor",
+        "georef_status": "fit-hull-supported",
+        "position_note": "Approximate historical-map location; manually edited working geometry. Coordinates are not a modern surveyed fix.",
+        "source_version": "east-of-Milin working points, derived from v4.1; feature.geometry retained",
+        "source_url": "https://www.jstor.org/stable/1778591"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          94.86274631109839,
+          29.524651351323964
+        ]
+      },
+      "properties": {
+        "place_id": "BM1913-P027",
+        "historical_label": "Pe",
+        "display_label": "Pe",
+        "evidence_class": "visited",
+        "evidence_title": "Measured river level",
+        "evidence_note": "Bailey reports a river altitude of 9,680 feet at Pe.",
+        "journal_pages": "351",
+        "geometry_method": "symbol_anchor",
+        "georef_status": "fit-hull-supported",
+        "position_note": "Approximate historical-map location; manually edited working geometry. Coordinates are not a modern surveyed fix.",
+        "source_version": "east-of-Milin working points, derived from v4.1; feature.geometry retained",
+        "source_url": "https://www.jstor.org/stable/1778591"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          95.80601525870381,
+          28.9526672
+        ]
+      },
+      "properties": {
+        "place_id": "BM1913-P055",
+        "historical_label": "Mipi",
+        "display_label": "Mipi",
+        "evidence_class": "visited",
+        "evidence_title": "Documented travel",
+        "evidence_note": "The party left Mipi on 16 May 1913.",
+        "journal_pages": "342",
+        "geometry_method": "symbol_anchor",
+        "georef_status": "poly2-extrapolated-unsafe",
+        "position_note": "Approximate historical-map location; manually edited working geometry. Coordinates are not a modern surveyed fix.",
+        "source_version": "east-of-Milin working points, derived from v4.1; feature.geometry retained",
+        "source_url": "https://www.jstor.org/stable/1778591"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          94.9546683,
+          29.7095124
+        ]
+      },
+      "properties": {
+        "place_id": "BM1913-P201",
+        "historical_label": "Gyala",
+        "display_label": "Gyala",
+        "evidence_class": "visited",
+        "evidence_title": "Documented travel",
+        "evidence_note": "The account follows the river from Pe through Gyala toward Pemakochung.",
+        "journal_pages": "348-351",
+        "geometry_method": "label_centroid",
+        "georef_status": "fit-hull-supported",
+        "position_note": "Approximate historical-map location; manually edited working geometry. Coordinates are not a modern surveyed fix.",
+        "source_version": "east-of-Milin working points, derived from v4.1; feature.geometry retained",
+        "source_url": "https://www.jstor.org/stable/1778591"
+      }
+    }
+  ]
+}

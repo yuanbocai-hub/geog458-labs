@@ -1,0 +1,601 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            95.8167341,
+            28.9560716
+          ],
+          [
+            95.7892997,
+            28.9891601
+          ],
+          [
+            95.7857214,
+            29.0424807
+          ],
+          [
+            95.7641254,
+            29.0579829
+          ],
+          [
+            95.729653,
+            29.0888674
+          ],
+          [
+            95.6951695,
+            29.1197445
+          ],
+          [
+            95.6606749,
+            29.1506141
+          ],
+          [
+            95.6261692,
+            29.1814764
+          ],
+          [
+            95.5916523,
+            29.2123312
+          ],
+          [
+            95.5790776,
+            29.2505272
+          ],
+          [
+            95.5445415,
+            29.2813713
+          ],
+          [
+            95.5231084,
+            29.3120562
+          ],
+          [
+            95.5585118,
+            29.3420724
+          ],
+          [
+            95.576442,
+            29.3722881
+          ],
+          [
+            95.6205219,
+            29.3945715
+          ],
+          [
+            95.5859715,
+            29.425421
+          ],
+          [
+            95.5424358,
+            29.4411571
+          ],
+          [
+            95.5077547,
+            29.4643851
+          ],
+          [
+            95.4677697,
+            29.4846239
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_CORE",
+        "segment_order": 1,
+        "name": "Mipi-Yongyap La-Pungpung La-Chimdro-Kapu",
+        "confidence": "high",
+        "geometry_status": "traced_visible_with_short_occlusion",
+        "text_supported": true,
+        "inside_fit_hull": false,
+        "fit_hull_coverage": 0.053
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            95.4677697,
+            29.4846239
+          ],
+          [
+            95.4331803,
+            29.4523049
+          ],
+          [
+            95.4038133,
+            29.4161129
+          ],
+          [
+            95.3752754,
+            29.374576
+          ],
+          [
+            95.3485415,
+            29.3352922
+          ],
+          [
+            95.3481335,
+            29.3025749
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_RINCHENPUNG",
+        "segment_order": 2,
+        "name": "Kapu-Rinchenpung shared out-and-back road",
+        "confidence": "high",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": true,
+        "fit_hull_coverage": 1.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            95.477952,
+            29.4616873
+          ],
+          [
+            95.41031135183066,
+            29.619098456619813
+          ],
+          [
+            95.39089270895715,
+            29.644711475661982
+          ],
+          [
+            95.42709037352074,
+            29.66258116507028
+          ],
+          [
+            95.41738582799931,
+            29.70526802169009
+          ],
+          [
+            95.3978531576332,
+            29.76397690529585
+          ],
+          [
+            95.4104859,
+            29.8251969
+          ],
+          [
+            95.38575764704149,
+            29.920152443380186
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_CORE",
+        "segment_order": 3,
+        "name": "Kapu-Pango-Tsangrang-Lagung-Sii La-Showa",
+        "confidence": "high",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": false,
+        "fit_hull_coverage": 0.273
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            95.3917551,
+            29.9219526
+          ],
+          [
+            95.3615205,
+            29.9557376
+          ],
+          [
+            95.3225688,
+            29.9949328
+          ],
+          [
+            95.2790493,
+            30.0235262
+          ],
+          [
+            95.2486903,
+            30.0512103
+          ],
+          [
+            95.2052015,
+            30.083584
+          ],
+          [
+            95.1572795,
+            30.1144705
+          ],
+          [
+            95.1135482,
+            30.1316217
+          ],
+          [
+            95.0786661,
+            30.1532379
+          ],
+          [
+            95.0393372,
+            30.1718477
+          ],
+          [
+            95.0000208,
+            30.1919683
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_YIGRONG_OUT",
+        "segment_order": 4,
+        "name": "Showa-Satong-Dem-Tangme-Yigrong-Dre",
+        "confidence": "high",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": false,
+        "fit_hull_coverage": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            95.0000208,
+            30.1919683
+          ],
+          [
+            95.0260019,
+            30.1613298
+          ],
+          [
+            95.0519754,
+            30.1306868
+          ],
+          [
+            95.0779205,
+            30.0985193
+          ],
+          [
+            95.0774812,
+            30.0658375
+          ],
+          [
+            95.0551008,
+            30.0348783
+          ],
+          [
+            95.0065002,
+            30.0132714
+          ],
+          [
+            94.9580974,
+            30.0060909
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_YIGRONG_RETURN",
+        "segment_order": 5,
+        "name": "Dre-Yigrong return bank-Trulung",
+        "confidence": "medium",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": false,
+        "fit_hull_coverage": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            94.9580974,
+            30.0060909
+          ],
+          [
+            94.9009492,
+            30.0012471
+          ],
+          [
+            94.8480642,
+            29.984181
+          ],
+          [
+            94.8230401,
+            29.9440689
+          ],
+          [
+            94.8137594,
+            29.8969849
+          ],
+          [
+            94.8114474,
+            29.8437585
+          ],
+          [
+            94.802136,
+            29.7905783
+          ],
+          [
+            94.7797378,
+            29.7412894
+          ],
+          [
+            94.7731688,
+            29.6956844
+          ],
+          [
+            94.7875913,
+            29.6461227
+          ],
+          [
+            94.8133553,
+            29.5926703
+          ],
+          [
+            94.8592331,
+            29.5390626
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_CORE",
+        "segment_order": 6,
+        "name": "Trulung-Rong Chu-Lunang-Nyima La-Timpa-Pe",
+        "confidence": "high",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": false,
+        "fit_hull_coverage": 0.833
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            94.8592331,
+            29.5390626
+          ],
+          [
+            94.8245547,
+            29.5735641
+          ],
+          [
+            94.8135696,
+            29.6154984
+          ],
+          [
+            94.8358085,
+            29.6518605
+          ],
+          [
+            94.8711592,
+            29.6835502
+          ],
+          [
+            94.9108985,
+            29.7136712
+          ],
+          [
+            94.8981177,
+            29.7480062
+          ],
+          [
+            94.9291013,
+            29.7759029
+          ],
+          [
+            94.9731261,
+            29.7922713
+          ],
+          [
+            95.0214793,
+            29.8025026
+          ],
+          [
+            95.0696768,
+            29.7990294
+          ],
+          [
+            95.1110025,
+            29.8070131
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_GORGE",
+        "segment_order": 7,
+        "name": "Pe-Nyuksang-Gyala-Pemakochung",
+        "confidence": "high",
+        "geometry_status": "traced_visible_with_short_occlusion",
+        "text_supported": true,
+        "inside_fit_hull": true,
+        "fit_hull_coverage": 1.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            95.1110025,
+            29.8070131
+          ],
+          [
+            95.1486707,
+            29.8028529
+          ],
+          [
+            95.1835978,
+            29.7903457
+          ],
+          [
+            95.2187948,
+            29.7983599
+          ],
+          [
+            95.2493425,
+            29.7866429
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_GORGE_RECON",
+        "segment_order": 8,
+        "name": "Pemakochung-Sanglung-Churung visible route fragment",
+        "confidence": "low",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": false,
+        "fit_hull_coverage": 0.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            94.9291013,
+            29.7759029
+          ],
+          [
+            94.8981177,
+            29.7480062
+          ],
+          [
+            94.9108985,
+            29.7136712
+          ],
+          [
+            94.8711592,
+            29.6835502
+          ],
+          [
+            94.8358085,
+            29.6518605
+          ],
+          [
+            94.8135696,
+            29.6154984
+          ],
+          [
+            94.8245547,
+            29.5735641
+          ],
+          [
+            94.8592331,
+            29.5390626
+          ],
+          [
+            94.8038755,
+            29.5128268
+          ],
+          [
+            94.7425424,
+            29.5003076
+          ],
+          [
+            94.6812821,
+            29.4946123
+          ],
+          [
+            94.6201068,
+            29.4987876
+          ],
+          [
+            94.5589653,
+            29.5075064
+          ],
+          [
+            94.4977622,
+            29.5070653
+          ],
+          [
+            94.4496127,
+            29.4958786
+          ],
+          [
+            94.4057811,
+            29.4732341
+          ],
+          [
+            94.370667,
+            29.4429226
+          ],
+          [
+            94.3399053,
+            29.4049659
+          ],
+          [
+            94.3178994,
+            29.3669657
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_TSANGPO_UP",
+        "segment_order": 9,
+        "name": "Gyala-Pe-Temo-Gyamda crossing-Tsela",
+        "confidence": "high",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": true,
+        "fit_hull_coverage": 1.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            93.3179404,
+            28.697391
+          ],
+          [
+            93.3821633,
+            28.6876936
+          ],
+          [
+            93.6257901,
+            28.7066244
+          ],
+          [
+            93.6693719,
+            28.6486867
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "BM2_TSARI_SPUR",
+        "segment_order": 13,
+        "name": "Chikchar-Migyitiin shared out-and-back road",
+        "confidence": "high",
+        "geometry_status": "traced_visible",
+        "text_supported": true,
+        "inside_fit_hull": true,
+        "fit_hull_coverage": 1.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Following the Tsangpo</title>
+    <meta name="description" content="A geographical story about Bailey and Morshead's 1913 Tsangpo journey, river observations, and the limits of their survey.">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="map" aria-label="Historical expedition routes and places in the Tsangpo region"></div>
+    <a class="site-name" href="#header">RIVERSCAPE <span>/ TSANGPO</span></a>
+    <nav id="chapter-nav" aria-label="Story chapters"></nav>
+    <aside id="map-key" aria-label="Map legend">
+        <p class="key-title">READING THE MAP</p>
+        <p><span class="key-line"></span>Pe–Pemakochung route</p>
+        <p><span class="key-line fragment"></span>Less certain route fragment</p>
+        <p><span class="key-dot"></span>Documented visit / observation</p>
+        <p id="inferred-key"><span class="key-dot inferred"></span>Reported / inferred location</p>
+        <small>Historical positions are approximate. Modern terrain provides context.</small>
+        <label class="flight-setting">Map flight
+            <select id="flight-duration" aria-label="Map flight duration">
+                <option value="2000">2 seconds</option>
+                <option value="4000">4 seconds</option>
+            </select>
+        </label>
+    </aside>
+    <p id="map-status" role="status">Loading the map…</p>
+    <main id="story">
+        <header id="header">
+            <div class="intro">
+                <p class="eyebrow" id="byline"></p>
+                <h1 id="title"></h1>
+                <p class="subtitle" id="subtitle"></p>
+                <p class="intro-note">A geographical reading of the 1913 journey</p>
+                <a class="start-link" href="#features">Follow the river ↓</a>
+            </div>
+        </header>
+        <div id="features"></div>
+        <footer id="footer">
+            <p id="credits"></p>
+            <div id="source-links" aria-label="Sources and image credits"></div>
+            <p>Built for GEOG 458 using Mapbox GL JS and the configuration approach of
+                <a href="https://github.com/mapbox/storytelling">Mapbox Storytelling</a>.</p>
+            <a href="#header">Back to the beginning ↑</a>
+        </footer>
+    </main>
+    <noscript>Enable JavaScript in your browser to view this Storymap.</noscript>
+    <!-- Load the data before the script that uses it. -->
+    <script src="./config.js"></script>
+    <script>
+        const features = document.getElementById('features');
+        const navigation = document.getElementById('chapter-nav');
+        const status = document.getElementById('map-status');
+        let map;
+        let marker;
+
+        document.body.dataset.theme = config.theme || 'light';
+        document.getElementById('title').textContent = config.title;
+        document.getElementById('subtitle').textContent = config.subtitle;
+        document.getElementById('byline').textContent = config.byline;
+        document.getElementById('credits').textContent = config.footer;
+        document.title = config.title + ' | Storymap';
+        document.querySelector('.start-link').href = '#' + config.chapters[0].id;
+        (config.sources || []).forEach(source => {
+            const link = document.createElement('a');
+            link.href = source.url;
+            link.textContent = source.title;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            document.getElementById('source-links').appendChild(link);
+        });
+        document.getElementById('flight-duration').addEventListener('change', event => {
+            config.transitionDuration = Number(event.target.value);
+        });
+
+        // STEP 1: Build static story sections from the configuration.
+        config.chapters.forEach((chapter, index) => {
+            const section = document.createElement('section');
+            section.id = chapter.id;
+            section.className = 'step';
+            section.dataset.index = index;
+            section.dataset.alignment = chapter.alignment || 'left';
+            section.setAttribute('aria-labelledby', chapter.id + '-title');
+
+            const card = document.createElement('div');
+            card.className = 'chapter-card';
+            const number = document.createElement('p');
+            number.className = 'chapter-number';
+            number.textContent = 'CHAPTER ' + (index + 1) + ' / ' + config.chapters.length;
+            const heading = document.createElement('h2');
+            heading.id = chapter.id + '-title';
+            heading.textContent = chapter.title;
+            card.append(number, heading);
+
+            if (chapter.image) {
+                const figure = document.createElement('figure');
+                const image = document.createElement('img');
+                image.src = chapter.image;
+                image.alt = chapter.imageAlt || '';
+                image.loading = 'lazy';
+                image.width = 1600;
+                image.height = chapter.id === 'pemakochung' ? 1017 : 997;
+                figure.appendChild(image);
+                if (chapter.imageCaption) {
+                    const caption = document.createElement('figcaption');
+                    caption.textContent = chapter.imageCaption;
+                    if (chapter.originalImage) {
+                        const original = document.createElement('a');
+                        original.href = chapter.originalImage;
+                        original.textContent = 'Compare the original scan';
+                        original.target = '_blank';
+                        original.rel = 'noopener';
+                        caption.appendChild(original);
+                    }
+                    figure.appendChild(caption);
+                }
+                card.appendChild(figure);
+            }
+            const description = document.createElement('p');
+            description.className = 'description';
+            description.textContent = chapter.description;
+            card.appendChild(description);
+            if (chapter.measurements) {
+                const readings = document.createElement('dl');
+                readings.className = 'readings';
+                chapter.measurements.forEach(reading => {
+                    const pair = document.createElement('div');
+                    const term = document.createElement('dt');
+                    const value = document.createElement('dd');
+                    term.textContent = reading.label;
+                    value.textContent = reading.value;
+                    pair.append(term, value);
+                    readings.appendChild(pair);
+                });
+                const note = document.createElement('p');
+                note.className = 'reading-note';
+                note.textContent = chapter.measurementLabel;
+                card.append(readings, note);
+            }
+            const source = document.createElement('p');
+            source.className = 'chapter-source';
+            const citation = document.createElement('a');
+            citation.href = 'https://www.jstor.org/stable/1778591';
+            citation.textContent = chapter.source;
+            citation.target = '_blank';
+            citation.rel = 'noopener';
+            source.appendChild(citation);
+            card.appendChild(source);
+            section.appendChild(card);
+            features.appendChild(section);
+
+            const link = document.createElement('a');
+            link.href = '#' + chapter.id;
+            link.setAttribute('aria-label', chapter.label || chapter.title);
+            const fullLabel = document.createElement('span');
+            fullLabel.className = 'nav-full';
+            fullLabel.textContent = chapter.label || chapter.title;
+            const shortLabel = document.createElement('span');
+            shortLabel.className = 'nav-short';
+            shortLabel.textContent = ['01 · Question', '02 · River', '03 · Falls', '04 · Beyond'][index];
+            link.append(fullLabel, shortLabel);
+            navigation.appendChild(link);
+        });
+        const steps = [...document.querySelectorAll('.step')];
+        const links = [...navigation.querySelectorAll('a')];
+
+        function cameraFor(chapter) {
+            const narrow = window.innerWidth <= 700;
+            const side = Math.min(490, window.innerWidth * 0.43);
+            return {
+                ...chapter.location,
+                padding: narrow
+                    ? { top: 90, bottom: Math.min(310, window.innerHeight * 0.35), left: 24, right: 24 }
+                    : { top: 95, bottom: 65, left: chapter.alignment === 'right' ? 35 : side, right: chapter.alignment === 'right' ? side : 35 }
+            };
+        }
+
+        try {
+            if (!window.mapboxgl) throw new Error('Mapbox script unavailable');
+            mapboxgl.accessToken = config.accessToken;
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: config.style,
+                ...cameraFor(config.chapters[0]),
+                interactive: true
+            });
+            // Leave page scrolling in charge, while keeping place clicks available.
+            map.scrollZoom.disable();
+            map.boxZoom.disable();
+            map.dragRotate.disable();
+            map.dragPan.disable();
+            map.keyboard.disable();
+            map.doubleClickZoom.disable();
+            map.touchZoomRotate.disable();
+            map.touchPitch.disable();
+            if (config.showMarkers) {
+                marker = new mapboxgl.Marker({ color: config.markerColor })
+                    .setLngLat(config.chapters[0].location.center)
+                    .addTo(map);
+                map.on('move', () => marker.setLngLat(map.getCenter()));
+            }
+            map.on('load', async () => {
+                status.hidden = true;
+
+                // OPTIONAL LAYERS START: add your own sources and layers here.
+                // Keep the terrain visible without modern place names and roads.
+                map.getStyle().layers.forEach(layer => {
+                    if (layer.type === 'symbol' || /road|bridge|tunnel|building|aeroway|ferry|admin|boundary/.test(layer.id)) {
+                        map.setLayoutProperty(layer.id, 'visibility', 'none');
+                    }
+                    if (layer.type === 'background') map.setPaintProperty(layer.id, 'background-color', '#ebe8df');
+                    if (layer.type === 'fill' && /water/.test(layer.id)) map.setPaintProperty(layer.id, 'fill-color', '#a8c6ca');
+                    if (layer.type === 'fill' && /landuse|landcover/.test(layer.id)) map.setPaintProperty(layer.id, 'fill-opacity', 0.25);
+                    if (layer.type === 'line' && /contour/.test(layer.id)) {
+                        map.setPaintProperty(layer.id, 'line-color', '#9b927e');
+                        map.setPaintProperty(layer.id, 'line-opacity', 0.22);
+                    }
+                });
+                try {
+                    const data = await Promise.all(['./data/story-routes.geojson', './data/story-places.geojson'].map(async url => {
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Missing story data: ' + url);
+                        return response.json();
+                    }));
+                    map.addSource('historical-routes', { type: 'geojson', data: data[0] });
+                    map.addSource('historical-places', { type: 'geojson', data: data[1] });
+                    map.addLayer({ id: 'survey-routes', type: 'line', source: 'historical-routes',
+                        filter: ['!=', ['get', 'confidence'], 'low'],
+                        layout: { 'line-cap': 'round', 'line-join': 'round' },
+                        paint: { 'line-color': '#697d78', 'line-width': 1.8, 'line-opacity': 0 } });
+                    map.addLayer({ id: 'corridor-route', type: 'line', source: 'historical-routes',
+                        filter: ['==', ['get', 'segment_order'], 7],
+                        layout: { 'line-cap': 'round', 'line-join': 'round' },
+                        paint: { 'line-color': '#175e62', 'line-width': 4, 'line-opacity': 0 } });
+                    map.addLayer({ id: 'route-fragment', type: 'line', source: 'historical-routes',
+                        filter: ['==', ['get', 'segment_order'], 8],
+                        paint: { 'line-color': '#706f68', 'line-width': 2.7, 'line-dasharray': [2, 2], 'line-opacity': 0 } });
+                    const visited = ['==', ['get', 'evidence_class'], 'visited'];
+                    const inferred = ['==', ['get', 'evidence_class'], 'inferred'];
+                    map.addLayer({ id: 'story-points', type: 'circle', source: 'historical-places', filter: visited,
+                        paint: { 'circle-radius': 5, 'circle-color': '#175e62', 'circle-stroke-color': '#fffdf6',
+                            'circle-stroke-width': 2, 'circle-opacity': 0, 'circle-stroke-opacity': 0 } });
+                    map.addLayer({ id: 'inferred-point', type: 'circle', source: 'historical-places', filter: inferred,
+                        paint: { 'circle-radius': 8, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': '#a26924',
+                            'circle-stroke-width': 3, 'circle-opacity': 0, 'circle-stroke-opacity': 0 } });
+                    const textLayout = { 'text-field': ['get', 'historical_label'], 'text-font': ['Open Sans Semibold', 'Arial Unicode MS Regular'],
+                        'text-size': 13, 'text-anchor': window.innerWidth <= 700 ? 'bottom-right' : 'bottom-left',
+                        'text-offset': window.innerWidth <= 700 ? [-0.6, -0.65] : [0.6, -0.65], 'text-allow-overlap': true };
+                    map.addLayer({ id: 'story-labels', type: 'symbol', source: 'historical-places', filter: visited,
+                        layout: textLayout, paint: { 'text-color': '#143e42', 'text-halo-color': '#fffdf6', 'text-halo-width': 2, 'text-opacity': 0 } });
+                    map.addLayer({ id: 'inferred-label', type: 'symbol', source: 'historical-places', filter: inferred,
+                        layout: { ...textLayout, 'text-field': 'Gompo Ne (approx.)' },
+                        paint: { 'text-color': '#8c561c', 'text-halo-color': '#fffdf6', 'text-halo-width': 2, 'text-opacity': 0 } });
+                    ['story-points', 'inferred-point'].forEach(layerId => {
+                        map.on('click', layerId, event => {
+                            const feature = event.features[0];
+                            const props = feature.properties;
+                            const content = document.createElement('div');
+                            const title = document.createElement('h3');
+                            title.textContent = props.display_label;
+                            const note = document.createElement('p');
+                            note.textContent = props.evidence_note;
+                            const citation = document.createElement('small');
+                            citation.textContent = 'Bailey 1914, pp. ' + props.journal_pages + '. Approximate historical position.';
+                            content.append(title, note, citation);
+                            new mapboxgl.Popup({ maxWidth: '280px' }).setLngLat(feature.geometry.coordinates).setDOMContent(content).addTo(map);
+                        });
+                        map.on('mouseenter', layerId, () => map.getCanvas().style.cursor = 'pointer');
+                        map.on('mouseleave', layerId, () => map.getCanvas().style.cursor = '');
+                    });
+                } catch (error) {
+                    status.textContent = 'The historical layers could not load. Open this folder with Live Server and check the data files.';
+                    status.hidden = false;
+                    console.error(error);
+                }
+                // OPTIONAL LAYERS END
+
+                // STEP 2 START
+                let activeIndex = -1;
+
+                // Optional Mapbox-template feature: change opacity on layers that already exist.
+                function setLayerOpacity(change) {
+                    const layer = map.getLayer(change.layer);
+                    if (!layer) {
+                        console.warn('Add this layer before using chapter hooks:', change.layer);
+                        return;
+                    }
+                    const properties = {
+                        fill: ['fill-opacity'],
+                        line: ['line-opacity'],
+                        circle: ['circle-opacity', 'circle-stroke-opacity'],
+                        symbol: ['icon-opacity', 'text-opacity'],
+                        raster: ['raster-opacity'],
+                        'fill-extrusion': ['fill-extrusion-opacity'],
+                        heatmap: ['heatmap-opacity']
+                    };
+                    (properties[layer.type] || []).forEach(property => {
+                        map.setPaintProperty(change.layer, property + '-transition', {
+                            duration: change.duration ?? 300
+                        });
+                        map.setPaintProperty(change.layer, property, change.opacity);
+                    });
+                }
+
+                function moveMap(index, immediately = false) {
+                    const chapter = config.chapters[index];
+                    map.stop(); // A new focus starts from the camera's current position.
+                    if (immediately || chapter.mapAnimation === 'jumpTo') {
+                        map.jumpTo(cameraFor(chapter));
+                        return;
+                    }
+                    const options = {
+                        ...cameraFor(chapter),
+                        duration: config.transitionDuration,
+                        essential: true, // Spatial movement is part of this story.
+                        easing: t => t * t * (3 - 2 * t)
+                    };
+                    if (chapter.mapAnimation === 'easeTo') map.easeTo(options);
+                    else map.flyTo(options);
+                }
+
+                function activateChapter(index, immediately = false) {
+                    if (index === activeIndex) return;
+                    if (activeIndex >= 0) {
+                        (config.chapters[activeIndex].onChapterExit || []).forEach(setLayerOpacity);
+                    }
+                    activeIndex = index;
+                    document.body.dataset.alignment = config.chapters[index].alignment;
+                    steps.forEach((step, i) => step.classList.toggle('active', i === index));
+                    links.forEach((link, i) => {
+                        if (i === index) link.setAttribute('aria-current', 'step');
+                        else link.removeAttribute('aria-current');
+                    });
+                    (config.chapters[index].onChapterEnter || []).forEach(setLayerOpacity);
+                    document.getElementById('inferred-key').hidden = index !== 3;
+                    document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
+                    moveMap(index, immediately);
+                }
+
+                document.body.classList.add('is-interactive');
+                activateChapter(0, true); // Initial focus; this does not start scroll detection.
+                // STEP 2 END
+
+                // STEP 3 START
+                let observer;
+
+                function observeChapters() {
+                    if (observer) observer.disconnect();
+                    const visible = new Set();
+                    const margin = Math.floor(window.innerHeight * 0.45);
+
+                    observer = new IntersectionObserver(entries => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) visible.add(entry.target);
+                            else visible.delete(entry.target);
+                        });
+
+                        // If two sections overlap the band, compare their section centers.
+                        const distance = section => {
+                            const rect = section.getBoundingClientRect();
+                            return Math.abs((rect.top + rect.bottom) / 2 - window.innerHeight / 2);
+                        };
+                        const nearest = [...visible].sort((a, b) => distance(a) - distance(b))[0];
+                        if (nearest) activateChapter(Number(nearest.dataset.index));
+                    }, {
+                        root: null,
+                        rootMargin: '-' + margin + 'px 0px -' + margin + 'px 0px',
+                        threshold: 0
+                    });
+
+                    steps.forEach(step => observer.observe(step));
+                }
+
+                observeChapters(); // Register detection; later callbacks activate chapters.
+                window.addEventListener('resize', () => {
+                    observeChapters();
+                    ['story-labels', 'inferred-label'].forEach(id => {
+                        if (!map.getLayer(id)) return;
+                        map.setLayoutProperty(id, 'text-anchor', window.innerWidth <= 700 ? 'bottom-right' : 'bottom-left');
+                        map.setLayoutProperty(id, 'text-offset', window.innerWidth <= 700 ? [-0.6, -0.65] : [0.6, -0.65]);
+                    });
+                    map.jumpTo(cameraFor(config.chapters[Math.max(activeIndex, 0)]));
+                });
+                // STEP 3 END
+            });
+            map.on('error', () => {
+                status.textContent = 'Could not load the map. Check your connection, public Mapbox token, and allowed URLs.';
+                status.hidden = false;
+            });
+        } catch (error) {
+            status.textContent = 'Could not start the map. Check Mapbox access and WebGL support. The story text is still available.';
+        }
+    </script>
+</body>
+</html>

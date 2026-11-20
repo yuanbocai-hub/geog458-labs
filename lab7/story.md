@@ -14,11 +14,15 @@ Source: Bailey 1914, pp. 341–343; accompanying map.
 
 ## 2. From Pe into the gorge
 
+Bailey and Morshead reached Pe by way of Nyima La on 13 July 1913. Bailey used Pe for the riverside village where the party took the ferry. Today, Pai (派) is the pinyin spelling in Pai Town (派镇), a town in Milin City that includes several villages. One of them is Pai Village (派村). The point on this map marks the approximate historical settlement; the exact ferry landing has yet to be located.
+
+At Pe they learned that another survey party had crossed Doshong La from Pemakö about a week earlier. For Bailey and Morshead, Pe was a place they visited and Doshong La a crossing they heard about on this journey.
+
 At Pe, Bailey describes a smooth river. About two miles downstream it breaks into rapids, which continue toward Gyala. The ferry photograph shows the quieter water before that change.
 
 The party used boiling-point observations to estimate river altitude, with trigonometrical heights as checks. Bailey reports 9,680 feet at Pe and 8,380 feet at Pemakochung. He used these observations to compare the descent between stops. The teal line traces the route printed on the historical map. The line is an itinerary trace, not a surveyed river centreline.
 
-Source: Bailey 1914, pp. 348, 351.
+Source: Bailey 1914, pp. 348, 351 and Pe ferry plate (scan p. 11). [Expedition report, scan p. 6](https://pahar.in/pahar/Books%20and%20Articles/Indian%20Subcontinent/1913%20Report%20on%20an%20Exploration%20on%20the%20North%20East%20Frontier%201913%20by%20Bailey%20and%20Morshead%20s.pdf). [Milin municipal records for Pai Town and Pai Village](https://www.milin.gov.cn/mlx/c101444/202408/9182bb636222410196adb90a29a2cc69.shtml).
 
 ## 3. Pemakochung: a place within Pemakö
 

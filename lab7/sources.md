@@ -28,6 +28,14 @@ Kerstin Grothmann, “Population History and Identity in the Hidden Land of Pema
 
 中文释名备注：“白马狗熊”若作为 Pemakochung 的音译使用，应按音译理解；这些汉字不是藏文地名的语义。“小 Pemakö”也不是墨脱县城或 Kapu 的另一种写法，不能把整个 Pemakö 区域的事件都定位到这个寺院点上。
 
+## Pe, Pai Town and Doshong La
+
+Bailey’s 1914 journal article captions the photograph “Looking down Tsangpo from ferry at Pe” (scan p. 11). In the [1913 expedition report](https://pahar.in/pahar/Books%20and%20Articles/Indian%20Subcontinent/1913%20Report%20on%20an%20Exploration%20on%20the%20North%20East%20Frontier%201913%20by%20Bailey%20and%20Morshead%20s.pdf), scan p. 6, the party records arriving via Nyima La on 13 July and hearing that another party had previously crossed Doshong La (Duoxiong La) from Pemakö. The historical point represents the riverside settlement at the precision of the digitized map. It does not locate the ferry landing exactly.
+
+Pai Town (派镇) is a present-day administrative unit of Milin City. The [Milin municipal government](https://www.milin.gov.cn/mlx/c101444/202408/9182bb636222410196adb90a29a2cc69.shtml) lists Pai Village (派村), Duoxiong Village and several other villages within it. The modern names identify the administrative setting; assigning the historical ferry to a particular present-day landing would require separate evidence.
+
+The contemporary terrain illustration is by Yuanbo. The Pai–Medog road and tunnel provide modern orientation. Terrain: Copernicus DEM GLO-30. Imagery: EOxCloudless / EOX, modified Copernicus Sentinel data 2016 (CC BY 4.0). Road and path data: © OpenStreetMap contributors.
+
 ## Spatial data
 
 The two GeoJSON files use EPSG:4326 longitude and latitude. They are teaching subsets of the existing Bailey–Morshead research data:

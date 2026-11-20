@@ -34,6 +34,10 @@ h2 { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; margin: 0
 .description { white-space: pre-line; font-size: .91rem; line-height: 1.78; margin: 20px 0 15px; }
 figure { margin: 0; }
 .chapter-card img { display: block; width: 100%; height: auto; margin: 0; background: #e7e5de; }
+.pe-view-switch { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.pe-view-switch button { font: inherit; font-size: .78rem; cursor: pointer; color: var(--accent); background: var(--paper); border: 1px solid var(--accent); border-radius: 3px; padding: 8px 10px; }
+.pe-view-switch button[aria-pressed="true"] { color: white; background: var(--accent); }
+.pe-view-switch button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 figcaption { color: var(--muted); font-size: .66rem; line-height: 1.6; margin-top: 8px; }
 figcaption a { display: block; width: fit-content; margin-top: 4px; }
 .chapter-source { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .69rem; line-height: 1.65; }

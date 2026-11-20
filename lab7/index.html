@@ -49,7 +49,7 @@
     </main>
     <noscript>Enable JavaScript in your browser to view this Storymap.</noscript>
     <!-- Load the data before the script that uses it. -->
-    <script src="./config.js?v=60b22e8bab"></script>
+    <script src="./config.js?v=ce7a584ba2"></script>
     <script>
         const features = document.getElementById('features');
         const navigation = document.getElementById('chapter-nav');
@@ -117,6 +117,42 @@
                     }
                     figure.appendChild(caption);
                 }
+                if (chapter.terrainView) {
+                    const switcher = document.createElement('div');
+                    switcher.className = 'pe-view-switch';
+                    switcher.setAttribute('role', 'group');
+                    switcher.setAttribute('aria-label', 'Views from Pe');
+                    figure.id = chapter.id + '-view';
+                    const caption = figure.querySelector('figcaption');
+                    const originalCaption = Array.from(caption.childNodes);
+                    const terrain = chapter.terrainView;
+                    const enlarged = document.createElement('a');
+                    enlarged.href = terrain.image;
+                    enlarged.textContent = 'Open full-size terrain map';
+                    enlarged.target = '_blank';
+                    enlarged.rel = 'noopener';
+                    for (const [index, title] of ['Ferry at Pe · 1913', 'Toward Doshong La · Today'].entries()) {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.textContent = title;
+                        button.setAttribute('aria-controls', figure.id);
+                        button.setAttribute('aria-pressed', String(index === 0));
+                        button.addEventListener('click', () => {
+                            const modern = index === 1;
+                            image.src = modern ? terrain.image : chapter.image;
+                            image.alt = modern ? terrain.alt : chapter.imageAlt;
+                            image.width = modern ? 2240 : 1600;
+                            image.height = modern ? 1820 : 997;
+                            if (modern) caption.replaceChildren(terrain.caption, enlarged);
+                            else caption.replaceChildren(...originalCaption);
+                            for (const choice of switcher.children) {
+                                choice.setAttribute('aria-pressed', String(choice === button));
+                            }
+                        });
+                        switcher.appendChild(button);
+                    }
+                    card.appendChild(switcher);
+                }
                 card.appendChild(figure);
             }
             const description = document.createElement('p');
@@ -148,6 +184,14 @@
             citation.target = '_blank';
             citation.rel = 'noopener';
             source.appendChild(citation);
+            for (const entry of chapter.furtherSources || []) {
+                const link = document.createElement('a');
+                link.href = entry.url;
+                link.textContent = entry.title;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                source.append(' · ', link);
+            }
             card.appendChild(source);
             section.appendChild(card);
             features.appendChild(section);

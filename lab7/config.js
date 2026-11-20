@@ -43,7 +43,16 @@ var config = {
             imageAlt: 'Historical monochrome view down the Tsangpo from the ferry at Pe, with mountains reflected in a broad, smooth stretch of river.',
             imageCaption: '“Looking down Tsangpo from ferry at Pe.” Bailey 1914, photographic plate, PDF p. 11. Restored display copy.',
             originalImage: './images/originals/pe-ferry-original.jpg',
-            description: "At Pe, Bailey describes a smooth river. About two miles downstream it breaks into rapids, which continue toward Gyala. The ferry photograph shows the quieter water before that change.\n\nThe party used boiling-point observations to estimate river altitude, with trigonometrical heights as checks. Bailey reports 9,680 feet at Pe and 8,380 feet at Pemakochung. He used these observations to compare the descent between stops. The teal line traces the route printed on the historical map. The line is an itinerary trace, not a surveyed river centreline.",
+            terrainView: {
+                image: './images/duoxiong-la-from-pai.png',
+                alt: 'Oblique modern terrain view from above Pai toward Duoxiong La, with a footpath crossing the ridge and the modern road passing beneath it.',
+                caption: 'Looking toward Doshong La from Pe. This modern terrain view shows the footpath over the pass and the road tunnel beneath the ridge. Cartography by Yuanbo.'
+            },
+            furtherSources: [
+                {title: '1913 expedition report, scan p. 6', url: 'https://pahar.in/pahar/Books%20and%20Articles/Indian%20Subcontinent/1913%20Report%20on%20an%20Exploration%20on%20the%20North%20East%20Frontier%201913%20by%20Bailey%20and%20Morshead%20s.pdf'},
+                {title: 'Milin municipal records for Pai Town and Pai Village', url: 'https://www.milin.gov.cn/mlx/c101444/202408/9182bb636222410196adb90a29a2cc69.shtml'}
+            ],
+            description: "Bailey and Morshead reached Pe by way of Nyima La on 13 July 1913. Bailey used Pe for the riverside village where the party took the ferry. Today, Pai (派) is the pinyin spelling in Pai Town (派镇), a town in Milin City that includes several villages. One of them is Pai Village (派村). The point on this map marks the approximate historical settlement; the exact ferry landing has yet to be located.\n\nAt Pe they learned that another survey party had crossed Doshong La from Pemakö about a week earlier. For Bailey and Morshead, Pe was a place they visited and Doshong La a crossing they heard about on this journey.\n\nAt Pe, Bailey describes a smooth river. About two miles downstream it breaks into rapids, which continue toward Gyala. The ferry photograph shows the quieter water before that change.\n\nThe party used boiling-point observations to estimate river altitude, with trigonometrical heights as checks. Bailey reports 9,680 feet at Pe and 8,380 feet at Pemakochung. He used these observations to compare the descent between stops. The teal line traces the route printed on the historical map. The line is an itinerary trace, not a surveyed river centreline.",
             measurements: [ { label: 'Pe', value: '9,680 ft' }, { label: 'Pemakochung', value: '8,380 ft' } ],
             measurementLabel: 'River altitudes reported by Bailey, p. 351',
             source: "Bailey 1914, pp. 348, 351.",

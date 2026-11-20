@@ -7,7 +7,7 @@
     <meta name="description" content="A geographical story about Bailey and Morshead's 1913 Tsangpo journey, river observations, and the limits of their survey.">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
-    <link href="./style.css" rel="stylesheet">
+    <link href="./style.css?v=fac4a4113a" rel="stylesheet">
 </head>
 <body>
     <div id="map" aria-label="Historical expedition routes and places in the Tsangpo region"></div>
@@ -121,20 +121,42 @@
                     const switcher = document.createElement('div');
                     switcher.className = 'pe-view-switch';
                     switcher.setAttribute('role', 'group');
-                    switcher.setAttribute('aria-label', 'Views from Pe');
+                    const viewLabel = document.createElement('p');
+                    viewLabel.id = chapter.id + '-choose';
+                    viewLabel.className = 'pe-view-label';
+                    viewLabel.textContent = 'Choose a view';
+                    switcher.setAttribute('aria-labelledby', viewLabel.id);
                     figure.id = chapter.id + '-view';
                     const caption = figure.querySelector('figcaption');
                     const originalCaption = Array.from(caption.childNodes);
                     const terrain = chapter.terrainView;
                     const enlarged = document.createElement('a');
                     enlarged.href = terrain.image;
-                    enlarged.textContent = 'Open full-size terrain map';
+                    enlarged.className = 'pe-terrain-link';
                     enlarged.target = '_blank';
                     enlarged.rel = 'noopener';
-                    for (const [index, title] of ['Ferry at Pe · 1913', 'Toward Doshong La · Today'].entries()) {
+                    const expand = document.createElement('span');
+                    expand.className = 'pe-expand';
+                    expand.textContent = 'Enlarge map ↗';
+                    enlarged.setAttribute('aria-label', 'Open full-size terrain map in a new tab');
+                    const choices = [
+                        ['Ferry at Pe', '1913 photograph', './images/pe-ferry-preview.webp'],
+                        ['Doshong La', 'Today’s terrain map', './images/doshong-la-preview.webp']
+                    ];
+                    for (const [index, [title, medium, thumbnail]] of choices.entries()) {
                         const button = document.createElement('button');
                         button.type = 'button';
-                        button.textContent = title;
+                        const preview = document.createElement('img');
+                        preview.src = thumbnail;
+                        preview.alt = '';
+                        preview.loading = 'lazy';
+                        const name = document.createElement('span');
+                        name.className = 'view-name';
+                        name.textContent = title;
+                        const type = document.createElement('span');
+                        type.className = 'view-medium';
+                        type.textContent = medium;
+                        button.append(preview, name, type);
                         button.setAttribute('aria-controls', figure.id);
                         button.setAttribute('aria-pressed', String(index === 0));
                         button.addEventListener('click', () => {
@@ -143,15 +165,22 @@
                             image.alt = modern ? terrain.alt : chapter.imageAlt;
                             image.width = modern ? 2240 : 1600;
                             image.height = modern ? 1820 : 997;
-                            if (modern) caption.replaceChildren(terrain.caption, enlarged);
-                            else caption.replaceChildren(...originalCaption);
+                            if (modern) {
+                                enlarged.replaceChildren(image, expand);
+                                figure.insertBefore(enlarged, caption);
+                                caption.textContent = terrain.caption;
+                            } else {
+                                figure.insertBefore(image, caption);
+                                enlarged.remove();
+                                caption.replaceChildren(...originalCaption);
+                            }
                             for (const choice of switcher.children) {
                                 choice.setAttribute('aria-pressed', String(choice === button));
                             }
                         });
                         switcher.appendChild(button);
                     }
-                    card.appendChild(switcher);
+                    card.append(viewLabel, switcher);
                 }
                 card.appendChild(figure);
             }

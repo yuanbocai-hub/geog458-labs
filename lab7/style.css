@@ -34,10 +34,17 @@ h2 { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; margin: 0
 .description { white-space: pre-line; font-size: .91rem; line-height: 1.78; margin: 20px 0 15px; }
 figure { margin: 0; }
 .chapter-card img { display: block; width: 100%; height: auto; margin: 0; background: #e7e5de; }
-.pe-view-switch { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.pe-view-switch button { font: inherit; font-size: .78rem; cursor: pointer; color: var(--accent); background: var(--paper); border: 1px solid var(--accent); border-radius: 3px; padding: 8px 10px; }
-.pe-view-switch button[aria-pressed="true"] { color: white; background: var(--accent); }
-.pe-view-switch button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.pe-view-label { margin: 0 0 8px; color: var(--ink); font-size: .86rem; font-weight: 700; }
+.pe-view-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 15px; }
+.pe-view-switch button { min-width: 0; display: flex; flex-direction: column; padding: 0; border: 2px solid #899c95; border-radius: 5px; overflow: hidden; background: white; color: var(--ink); cursor: pointer; text-align: left; font: inherit; }
+.pe-view-switch button:hover { border-color: var(--accent); box-shadow: 0 2px 7px #203d3f38; }
+.pe-view-switch button:focus-visible { outline: 3px solid #b47830; outline-offset: 3px; }
+.pe-view-switch button[aria-pressed="true"] { color: white; background: var(--accent); border-color: var(--accent); }
+.pe-view-switch button img { width: 100%; height: 44px; object-fit: cover; }
+.pe-view-switch .view-name { padding: 7px 8px 1px; font-size: .88rem; font-weight: 700; line-height: 1.25; }
+.pe-view-switch .view-medium { padding: 0 8px 7px; font-size: .76rem; line-height: 1.4; }
+.pe-terrain-link { display: block; position: relative; cursor: zoom-in; }
+.pe-expand { position: absolute; bottom: 10px; right: 8px; background: #153c40; color: white; border: 1px solid #ffffffb5; border-radius: 4px; padding: 7px 10px; font: 650 .8rem/1.25 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
 figcaption { color: var(--muted); font-size: .66rem; line-height: 1.6; margin-top: 8px; }
 figcaption a { display: block; width: fit-content; margin-top: 4px; }
 .chapter-source { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .69rem; line-height: 1.65; }

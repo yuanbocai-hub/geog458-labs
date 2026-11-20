@@ -43,7 +43,19 @@ figure { margin: 0; }
 .pe-view-switch button img { width: 100%; height: 44px; object-fit: cover; }
 .pe-view-switch .view-name { padding: 7px 8px 1px; font-size: .88rem; font-weight: 700; line-height: 1.25; }
 .pe-view-switch .view-medium { padding: 0 8px 7px; font-size: .76rem; line-height: 1.4; }
-.pe-terrain-link { display: block; position: relative; cursor: zoom-in; }
+.pe-terrain-link { display: block; position: relative; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.pe-terrain-link:focus-visible, .map-dialog button:focus-visible { outline: 3px solid #cc893c; outline-offset: 2px; }
+html:has(.map-dialog[open]) { overflow: hidden; }
+.map-dialog { box-sizing: border-box; width: min(1440px, calc(100% - 24px)); height: 94vh; height: 94dvh; max-width: none; max-height: none; padding: 0; border: 0; border-radius: 6px; background: #152624; color: white; }
+.map-dialog[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.map-dialog::backdrop { background: rgb(10 23 23 / 80%); }
+.map-dialog-header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; }
+.map-dialog-header h2 { flex: 1; margin: 0; font-size: 1.25rem; white-space: nowrap; }
+.map-dialog button { min-height: 44px; padding: 5px 11px; border: 1px solid #a4b6ad; border-radius: 4px; background: transparent; color: white; font: inherit; font-size: .87rem; cursor: pointer; }
+.map-dialog button:hover { background: #324742; }
+.map-dialog-image { overflow: auto; overscroll-behavior: contain; }
+.map-dialog-image img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.map-dialog-image.actual-size img { width: auto; height: auto; max-width: none; }
 .pe-expand { position: absolute; bottom: 10px; right: 8px; background: #153c40; color: white; border: 1px solid #ffffffb5; border-radius: 4px; padding: 7px 10px; font: 650 .8rem/1.25 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
 figcaption { color: var(--muted); font-size: .66rem; line-height: 1.6; margin-top: 8px; }
 figcaption a { display: block; width: fit-content; margin-top: 4px; }

@@ -7,7 +7,7 @@
     <meta name="description" content="A geographical story about Bailey and Morshead's 1913 Tsangpo journey, river observations, and the limits of their survey.">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
-    <link href="./style.css?v=fac4a4113a" rel="stylesheet">
+    <link href="./style.css?v=d97eaf630a" rel="stylesheet">
 </head>
 <body>
     <div id="map" aria-label="Historical expedition routes and places in the Tsangpo region"></div>
@@ -47,6 +47,14 @@
             <a href="#header">Back to the beginning ↑</a>
         </footer>
     </main>
+    <dialog class="map-dialog" id="pe-terrain-dialog" aria-labelledby="pe-map-title">
+        <div class="map-dialog-header">
+            <h2 id="pe-map-title">Doshong La</h2>
+            <button type="button" class="map-dialog-zoom">Actual size</button>
+            <button type="button" class="map-dialog-close" autofocus>Close ×</button>
+        </div>
+        <div class="map-dialog-image"><img alt=""></div>
+    </dialog>
     <noscript>Enable JavaScript in your browser to view this Storymap.</noscript>
     <!-- Load the data before the script that uses it. -->
     <script src="./config.js?v=ce7a584ba2"></script>
@@ -130,15 +138,46 @@
                     const caption = figure.querySelector('figcaption');
                     const originalCaption = Array.from(caption.childNodes);
                     const terrain = chapter.terrainView;
-                    const enlarged = document.createElement('a');
-                    enlarged.href = terrain.image;
+                    const enlarged = document.createElement('button');
+                    enlarged.type = 'button';
                     enlarged.className = 'pe-terrain-link';
-                    enlarged.target = '_blank';
-                    enlarged.rel = 'noopener';
                     const expand = document.createElement('span');
                     expand.className = 'pe-expand';
-                    expand.textContent = 'Enlarge map ↗';
-                    enlarged.setAttribute('aria-label', 'Open full-size terrain map in a new tab');
+                    expand.textContent = 'Enlarge map';
+                    enlarged.setAttribute('aria-label', 'Enlarge map of Doshong La');
+                    enlarged.setAttribute('aria-haspopup', 'dialog');
+
+                    const dialog = document.getElementById('pe-terrain-dialog');
+                    enlarged.setAttribute('aria-controls', dialog.id);
+                    const viewport = dialog.querySelector('.map-dialog-image');
+                    const largeImage = viewport.querySelector('img');
+                    const zoom = dialog.querySelector('.map-dialog-zoom');
+                    let peScroll;
+                    enlarged.addEventListener('click', () => {
+                        peScroll = window.scrollY;
+                        largeImage.src = terrain.image;
+                        largeImage.alt = terrain.alt;
+                        viewport.classList.remove('actual-size');
+                        zoom.textContent = 'Actual size';
+                        dialog.showModal();
+                        viewport.scrollTo(0, 0);
+                    });
+                    zoom.addEventListener('click', () => {
+                        const full = viewport.classList.toggle('actual-size');
+                        zoom.textContent = full ? 'Fit to screen' : 'Actual size';
+                    });
+                    dialog.querySelector('.map-dialog-close').addEventListener('click', () => dialog.close());
+                    dialog.addEventListener('click', event => {
+                        if (event.target === dialog) {
+                            const bounds = dialog.getBoundingClientRect();
+                            if (event.clientX < bounds.left || event.clientX > bounds.right ||
+                                event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+                        }
+                    });
+                    dialog.addEventListener('close', () => {
+                        enlarged.focus({ preventScroll: true });
+                        window.scrollTo({ top: peScroll, behavior: 'instant' });
+                    });
                     const choices = [
                         ['Ferry at Pe', '1913 photograph', './images/pe-ferry-preview.webp'],
                         ['Doshong La', 'Today’s terrain map', './images/doshong-la-preview.webp']
